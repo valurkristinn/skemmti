@@ -7,8 +7,13 @@ classDiagram
         -eventService: EventService
     }
 
-    class UserService["Interface<br/>UserService"]
-    class EventService["Interface<br/>EventService"]
+    class UserService {
+      <<Interface>>
+    }
+
+    class EventService {
+      <<Interface>>
+    }
 
     class UserServiceImplementation["@Service<br/>UserServiceImplementation"] {
         -userRepository: UserRepository
@@ -17,8 +22,13 @@ classDiagram
         -eventRepository: EventRepository
     }
 
-    class UserRepository["Interface<br/>UserRepository"]
-    class EventRepository["Interface<br/>EventRepository"]
+    class UserRepository {
+      <<Interface>>
+    }
+
+    class EventRepository {
+      <<Interface>>
+    }
 
     class UserEntity["@Entity<br/>User"] {
         -userId: Long
