@@ -1,0 +1,56 @@
+%%{init: {'theme': 'neutral'} }%%
+classDiagram
+    class UserController["@Controller<br/>UserController"] {
+        -userService: UserService
+    }
+    class EventController["@Controller<br/>EventController"] {
+        -eventService: EventService
+    }
+
+    class UserService["Interface<br/>UserService"]
+    class EventService["Interface<br/>EventService"]
+
+    class UserServiceImplementation["@Service<br/>UserServiceImplementation"] {
+        -userRepository: UserRepository
+    }
+    class EventServiceImplementation["@Service<br/>EventServiceImplementation"] {
+        -eventRepository: EventRepository
+    }
+
+    class UserRepository["Interface<br/>UserRepository"]
+    class EventRepository["Interface<br/>EventRepository"]
+
+    class UserEntity["@Entity<br/>User"] {
+        -userId: Long
+        -username: String
+        -image: String
+        -description: String
+    }
+    class MemberEntity["@Entity<br/>Member"]
+    class OrganizerEntity["@Entity<br/>Organizer"]
+    class AdminEntity["@Entity<br/>Admin"]
+    class EventEntity["@Entity<br/>Event"] {
+        -eventId: Long
+        -name: String
+        -date: LocalDate
+        -location: String
+        -organizer: OrganizerEntity
+        -description: String
+        -tag: String
+        -image: String
+    }
+
+    UserController --> UserService
+    EventController --> EventService
+
+    UserService <|.. UserServiceImplementation
+    EventService <|.. EventServiceImplementation
+
+    UserServiceImplementation --> UserRepository
+    EventServiceImplementation --> EventRepository
+
+    UserEntity <|-- MemberEntity
+    UserEntity <|-- OrganizerEntity
+    UserEntity <|-- AdminEntity
+
+    OrganizerEntity <-- EventEntity
