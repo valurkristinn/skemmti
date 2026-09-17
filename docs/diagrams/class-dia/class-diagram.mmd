@@ -35,19 +35,25 @@ classDiagram
         -username: String
         -image: String
         -description: String
+        -role: Role
     }
-    class MemberEntity["@Entity<br/>Member"]
-    class OrganizerEntity["@Entity<br/>Organizer"]
-    class AdminEntity["@Entity<br/>Admin"]
+
     class EventEntity["@Entity<br/>Event"] {
         -eventId: Long
         -name: String
         -date: LocalDate
         -location: String
-        -organizer: OrganizerEntity
+        -organizer: User
         -description: String
         -tag: String
         -image: String
+    }
+
+    class Role {
+        <<Enumeration>>
+        MEMBER
+        ORGANIZER
+        ADMIN
     }
 
     UserController --> UserService
@@ -59,8 +65,5 @@ classDiagram
     UserServiceImplementation --> UserRepository
     EventServiceImplementation --> EventRepository
 
-    UserEntity <|-- MemberEntity
-    UserEntity <|-- OrganizerEntity
-    UserEntity <|-- AdminEntity
-
-    OrganizerEntity <-- EventEntity
+    UserEntity <-- EventEntity
+    UserEntity --> Role
