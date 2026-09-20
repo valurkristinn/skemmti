@@ -1,8 +1,9 @@
-package com.example.eventapp.controller;
+package is.hi.skemmti.controller;
 
-import com.example.eventapp.model.Event;
-import com.example.eventapp.model.User;
-import com.example.eventapp.service.EventService;
+import is.hi.skemmti.model.Event;
+import is.hi.skemmti.model.User;
+import is.hi.skemmti.service.EventService;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
@@ -24,9 +25,9 @@ public class EventController {
         return null;
     }
 
+    @GetMapping("/event")
     public List<Event> getAllEvents() {
-        // TODO: útfæra
-        return null;
+        return eventService.getAllEvents();
     }
 
     public List<Event> searchEventsByDate(LocalDate date) {

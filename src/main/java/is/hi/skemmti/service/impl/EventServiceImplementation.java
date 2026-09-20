@@ -1,10 +1,10 @@
-package com.example.eventapp.service.impl;
+package is.hi.skemmti.service.impl;
 
-import com.example.eventapp.model.Event;
-import com.example.eventapp.model.User;
-import com.example.eventapp.repository.EventRepository;
-import com.example.eventapp.repository.UserRepository;
-import com.example.eventapp.service.EventService;
+import is.hi.skemmti.model.Event;
+import is.hi.skemmti.model.User;
+import is.hi.skemmti.repository.EventRepository;
+import is.hi.skemmti.repository.UserRepository;
+import is.hi.skemmti.service.EventService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,8 +29,7 @@ public class EventServiceImplementation implements EventService {
 
     @Override
     public List<Event> getAllEvents() {
-        // TODO: útfæra
-        return null;
+        return eventRepository.findAll();
     }
 
     @Override
