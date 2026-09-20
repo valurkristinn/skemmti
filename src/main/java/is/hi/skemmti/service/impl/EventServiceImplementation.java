@@ -82,4 +82,14 @@ public class EventServiceImplementation implements EventService {
         // TODO: útfæra
         return null;
     }
+
+    @Override
+    public void publish(Long userId, Long eventId) {
+        // TODO: útfæra - athuga að userId sé skipuleggjandi viðburðarins áður en birt er
+    }
+
+    @Override
+    public void unpublish(Long userId, Long eventId) {
+        // TODO: útfæra - athuga að userId sé skipuleggjandi viðburðarins áður en falið er
+    }
 }

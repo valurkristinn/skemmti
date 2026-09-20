@@ -26,6 +26,7 @@ public class Event {
 
     @ManyToOne
     private User organizer;
+    private boolean published;
 
     public Event() {
         // TODO: útfæra
@@ -109,6 +110,15 @@ public class Event {
     }
 
     public void setOrganizer(User organizer) {
+        // TODO: útfæra
+    }
+
+    public boolean isPublished() {
+        // TODO: útfæra
+        return false;
+    }
+
+    public void setPublished(boolean published) {
         // TODO: útfæra
     }
 }

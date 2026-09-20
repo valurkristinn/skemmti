@@ -69,4 +69,12 @@ public class EventController {
         // TODO: útfæra
         return null;
     }
+
+    public void publish(Long userId, Long eventId) {
+        // TODO: útfæra
+    }
+
+    public void unpublish(Long userId, Long eventId) {
+        // TODO: útfæra
+    }
 }
