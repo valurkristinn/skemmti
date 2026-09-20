@@ -1,69 +1,156 @@
 %%{init: {'theme': 'neutral'} }%%
 classDiagram
-    class UserController["@Controller<br/>UserController"] {
-        -userService: UserService
-    }
-    class EventController["@Controller<br/>EventController"] {
-        -eventService: EventService
-    }
+direction TB
 
-    class UserService {
-      <<Interface>>
-    }
+class UserController {
+    <<Controller>>
+    -userService: UserService
+    +login(username: String, password: String) User
+    +signup(username: String, password: String) User
+    +getUser(userId: Long) User
+    +favoriteOrganizer(memberId: Long, organizerId: Long) void
+    +unfavoriteOrganizer(memberId: Long, organizerId: Long) void
+    +getFavoriteOrganizers(memberId: Long) List~User~
+    +getAttendingEvents(memberId: Long) List~Event~
+}
 
-    class EventService {
-      <<Interface>>
-    }
+class EventController {
+    <<Controller>>
+    -eventService: EventService
+    +getEvent(eventId: Long) Event
+    +getAllEvents() List~Event~
+    +searchEventsByDate(date: LocalDate) List~Event~
+    +searchEventsByOrganizer(organizerId: Long) List~Event~
+    +createEvent(organizerId: Long, event: Event) Event
+    +editEvent(organizerId: Long, eventId: Long, event: Event) Event
+    +deleteEvent(adminId: Long, eventId: Long) void
+    +deleteOwnEvent(organizerId: Long, eventId: Long) void
+    +markGoing(memberId: Long, eventId: Long) void
+    +cancelGoing(memberId: Long, eventId: Long) void
+    +getAttendingMembers(eventId: Long) List~User~
+}
 
-    class UserServiceImplementation["@Service<br/>UserServiceImplementation"] {
-        -userRepository: UserRepository
-    }
-    class EventServiceImplementation["@Service<br/>EventServiceImplementation"] {
-        -eventRepository: EventRepository
-    }
+class UserService {
+    <<Interface>>
+    +login(username: String, password: String) User
+    +signup(username: String, password: String) User
+    +getUser(userId: Long) User
+    +favoriteOrganizer(memberId: Long, organizerId: Long) void
+    +unfavoriteOrganizer(memberId: Long, organizerId: Long) void
+    +getFavoriteOrganizers(memberId: Long) List~User~
+    +getAttendingEvents(memberId: Long) List~Event~
+}
 
-    class UserRepository {
-      <<Interface>>
-    }
+class EventService {
+    <<Interface>>
+    +getEvent(eventId: Long) Event
+    +getAllEvents() List~Event~
+    +searchEventsByDate(date: LocalDate) List~Event~
+    +searchEventsByOrganizer(organizerId: Long) List~Event~
+    +createEvent(organizerId: Long, event: Event) Event
+    +editEvent(organizerId: Long, eventId: Long, event: Event) Event
+    +deleteEvent(adminId: Long, eventId: Long) void
+    +deleteOwnEvent(organizerId: Long, eventId: Long) void
+    +markGoing(memberId: Long, eventId: Long) void
+    +cancelGoing(memberId: Long, eventId: Long) void
+    +getAttendingMembers(eventId: Long) List~User~
+}
 
-    class EventRepository {
-      <<Interface>>
-    }
+class UserServiceImplementation {
+    <<Service>>
+    -userRepository: UserRepository
+    +login(username: String, password: String) User
+    +signup(username: String, password: String) User
+    +getUser(userId: Long) User
+    +favoriteOrganizer(memberId: Long, organizerId: Long) void
+    +unfavoriteOrganizer(memberId: Long, organizerId: Long) void
+    +getFavoriteOrganizers(memberId: Long) List~User~
+    +getAttendingEvents(memberId: Long) List~Event~
+}
 
-    class UserEntity["@Entity<br/>User"] {
-        -userId: Long
-        -username: String
-        -image: String
-        -description: String
-        -role: Role
-    }
+class EventServiceImplementation {
+    <<Service>>
+    -eventRepository: EventRepository
+    -userRepository: UserRepository
+    +getEvent(eventId: Long) Event
+    +getAllEvents() List~Event~
+    +searchEventsByDate(date: LocalDate) List~Event~
+    +searchEventsByOrganizer(organizerId: Long) List~Event~
+    +createEvent(organizerId: Long, event: Event) Event
+    +editEvent(organizerId: Long, eventId: Long, event: Event) Event
+    +deleteEvent(adminId: Long, eventId: Long) void
+    +deleteOwnEvent(organizerId: Long, eventId: Long) void
+    +markGoing(memberId: Long, eventId: Long) void
+    +cancelGoing(memberId: Long, eventId: Long) void
+    +getAttendingMembers(eventId: Long) List~User~
+}
 
-    class EventEntity["@Entity<br/>Event"] {
-        -eventId: Long
-        -name: String
-        -date: LocalDate
-        -location: String
-        -organizer: User
-        -description: String
-        -tag: String
-        -image: String
-    }
+class UserRepository {
+    <<Interface>>
+    +findById(userId: Long) Optional~User~
+    +findByUsername(username: String) Optional~User~
+    +findByRole(role: Role) List~User~
+    +save(user: User) User
+    +delete(user: User) void
+}
 
-    class Role {
-        <<Enumeration>>
-        MEMBER
-        ORGANIZER
-        ADMIN
-    }
+class EventRepository {
+    <<Interface>>
+    +findById(eventId: Long) Optional~Event~
+    +findAll() List~Event~
+    +findByDate(date: LocalDate) List~Event~
+    +findByOrganizer_UserId(organizerId: Long) List~Event~
+    +save(event: Event) Event
+    +delete(event: Event) void
+}
 
-    UserController --> UserService
-    EventController --> EventService
+class Role {
+    <<Enum>>
+    MEMBER
+    ORGANIZER
+    ADMIN
+}
 
-    UserService <|.. UserServiceImplementation
-    EventService <|.. EventServiceImplementation
+class User {
+    <<Entity>>
+    -userId: Long
+    -username: String
+    -image: String
+    -description: String
+    -role: Role
+    -attendingEvents: List~Event~
+    -favoriteOrganizers: List~User~
+    +Constructor()
+    +Getters & Setters()
+}
 
-    UserServiceImplementation --> UserRepository
-    EventServiceImplementation --> EventRepository
+class Event {
+    <<Entity>>
+    -eventId: Long
+    -name: String
+    -date: LocalDate
+    -startTime: LocalTime
+    -location: String
+    -description: String
+    -tag: String
+    -image: String
+    -organizer: User
+    +Constructor()
+    +Getters & Setters()
+}
 
-    UserEntity <-- EventEntity
-    UserEntity --> Role
+UserController --> UserService
+EventController --> EventService
+
+UserService <|.. UserServiceImplementation
+EventService <|.. EventServiceImplementation
+
+UserServiceImplementation --> UserRepository
+EventServiceImplementation --> EventRepository
+EventServiceImplementation --> UserRepository
+
+User --> Role
+
+Event --> User
+User --> "0..*" Event
+User --> "0..*" User 
