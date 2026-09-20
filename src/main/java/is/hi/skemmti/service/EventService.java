@@ -1,7 +1,7 @@
-package com.example.eventapp.service;
+package is.hi.skemmti.service;
 
-import com.example.eventapp.model.Event;
-import com.example.eventapp.model.User;
+import is.hi.skemmti.model.Event;
+import is.hi.skemmti.model.User;
 
 import java.time.LocalDate;
 import java.util.List;

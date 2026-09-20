@@ -1,9 +1,9 @@
-package com.example.eventapp.service.impl;
+package is.hi.skemmti.service.impl;
 
-import com.example.eventapp.model.Event;
-import com.example.eventapp.model.User;
-import com.example.eventapp.repository.UserRepository;
-import com.example.eventapp.service.UserService;
+import is.hi.skemmti.model.Event;
+import is.hi.skemmti.model.User;
+import is.hi.skemmti.repository.UserRepository;
+import is.hi.skemmti.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

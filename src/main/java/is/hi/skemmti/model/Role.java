@@ -1,4 +1,4 @@
-package com.example.eventapp.model;
+package is.hi.skemmti.model;
 
 public enum Role {
     MEMBER,

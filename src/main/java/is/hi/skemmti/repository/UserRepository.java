@@ -1,7 +1,7 @@
-package com.example.eventapp.repository;
+package is.hi.skemmti.repository;
 
-import com.example.eventapp.model.Role;
-import com.example.eventapp.model.User;
+import is.hi.skemmti.model.Role;
+import is.hi.skemmti.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
