@@ -1,0 +1,55 @@
+%%{init: {'theme': 'neutral'} }%%
+sequenceDiagram
+    autonumber
+
+    actor Member
+    participant UserController
+    participant UserService
+    participant UserRepository
+    participant EventController
+    participant EventService
+    participant EventRepository
+
+    %% =========================
+    %% MEMBER LOGIN
+    %% =========================
+
+    Member->>UserController: login(username: String, password: String)
+    activate UserController
+
+    UserController->>UserService: login(username: String, password: String)
+    activate UserService
+
+    UserService->>UserRepository: findByUsername(username: String)
+    activate UserRepository
+
+    UserRepository-->>UserService: Optional<Member>
+    deactivate UserRepository
+
+    UserService-->>UserController: Member
+    deactivate UserService
+
+    UserController-->>Member: Member
+    deactivate UserController
+
+    %% =========================
+    %% SEARCH EVENTS BY DATE
+    %% =========================
+
+    Member->>EventController: searchEventsByDate(date: LocalDate)
+    activate EventController
+
+    EventController->>EventService: searchEventsByDate(date: LocalDate)
+    activate EventService
+
+    EventService->>EventRepository: findByDate(date: LocalDate)
+    activate EventRepository
+
+    EventRepository-->>EventService: List<Event>
+    deactivate EventRepository
+
+    EventService-->>EventController: List<Event>
+    deactivate EventService
+
+    EventController-->>Member: List<Event>
+    deactivate EventController
