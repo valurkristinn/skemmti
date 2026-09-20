@@ -1,8 +1,8 @@
-package com.example.eventapp.controller;
+package is.hi.skemmti.controller;
 
-import com.example.eventapp.model.Event;
-import com.example.eventapp.model.User;
-import com.example.eventapp.service.UserService;
+import is.hi.skemmti.model.Event;
+import is.hi.skemmti.model.User;
+import is.hi.skemmti.service.UserService;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;

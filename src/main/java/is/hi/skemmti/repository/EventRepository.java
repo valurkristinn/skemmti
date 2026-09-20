@@ -1,6 +1,6 @@
-package com.example.eventapp.repository;
+package is.hi.skemmti.repository;
 
-import com.example.eventapp.model.Event;
+import is.hi.skemmti.model.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

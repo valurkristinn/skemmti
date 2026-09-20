@@ -1,4 +1,4 @@
-package com.example.eventapp.model;
+package is.hi.skemmti.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

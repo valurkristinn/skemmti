@@ -1,4 +1,4 @@
-package com.example.eventapp.model;
+package is.hi.skemmti.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,96 +29,85 @@ public class Event {
     private boolean published;
 
     public Event() {
-        // TODO: útfæra
     }
 
     public Long getEventId() {
-        // TODO: útfæra
-        return null;
+        return eventId;
     }
 
     public void setEventId(Long eventId) {
-        // TODO: útfæra
+        this.eventId = eventId;
     }
 
     public String getName() {
-        // TODO: útfæra
-        return null;
+        return name;
     }
 
     public void setName(String name) {
-        // TODO: útfæra
+        this.name = name;
     }
 
     public LocalDate getDate() {
-        // TODO: útfæra
-        return null;
+        return date;
     }
 
     public void setDate(LocalDate date) {
-        // TODO: útfæra
+        this.date = date;
     }
 
     public LocalTime getStartTime() {
-        // TODO: útfæra
-        return null;
+        return startTime;
     }
 
     public void setStartTime(LocalTime startTime) {
-        // TODO: útfæra
+        this.startTime = startTime;
     }
 
     public String getLocation() {
-        // TODO: útfæra
-        return null;
+        return location;
     }
 
     public void setLocation(String location) {
-        // TODO: útfæra
+        this.location = location;
     }
 
     public String getDescription() {
-        // TODO: útfæra
-        return null;
+        return description;
     }
 
     public void setDescription(String description) {
-        // TODO: útfæra
+        this.description = description;
     }
 
     public String getTag() {
-        // TODO: útfæra
-        return null;
+        return tag;
     }
 
     public void setTag(String tag) {
-        // TODO: útfæra
+        this.tag = tag;
     }
 
     public String getImage() {
-        // TODO: útfæra
-        return null;
+        return image;
     }
 
     public void setImage(String image) {
-        // TODO: útfæra
+        this.image = image;
     }
 
     public User getOrganizer() {
-        // TODO: útfæra
-        return null;
+        return organizer;
     }
 
     public void setOrganizer(User organizer) {
-        // TODO: útfæra
+        this.organizer = organizer;
     }
 
     public boolean isPublished() {
-        // TODO: útfæra
-        return false;
+        return published;
     }
 
     public void setPublished(boolean published) {
-        // TODO: útfæra
+        this.published = published;
     }
 }
