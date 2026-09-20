@@ -28,6 +28,8 @@ class EventController {
     +markGoing(memberId: Long, eventId: Long) void
     +cancelGoing(memberId: Long, eventId: Long) void
     +getAttendingMembers(eventId: Long) List~User~
+    +publish(userId: Long, eventId: Long) void
+    +unpublish(userId: Long, eventId: Long) void
 }
 
 class UserService {
@@ -54,6 +56,8 @@ class EventService {
     +markGoing(memberId: Long, eventId: Long) void
     +cancelGoing(memberId: Long, eventId: Long) void
     +getAttendingMembers(eventId: Long) List~User~
+    +publish(userId: Long, eventId: Long) void
+    +unpublish(userId: Long, eventId: Long) void
 }
 
 class UserServiceImplementation {
@@ -83,6 +87,8 @@ class EventServiceImplementation {
     +markGoing(memberId: Long, eventId: Long) void
     +cancelGoing(memberId: Long, eventId: Long) void
     +getAttendingMembers(eventId: Long) List~User~
+    +publish(userId: Long, eventId: Long) void
+    +unpublish(userId: Long, eventId: Long) void
 }
 
 class UserRepository {
@@ -135,6 +141,7 @@ class Event {
     -tag: String
     -image: String
     -organizer: User
+    -published: boolean
     +Constructor()
     +Getters & Setters()
 }
