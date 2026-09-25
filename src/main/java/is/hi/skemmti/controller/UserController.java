@@ -5,6 +5,8 @@ import is.hi.skemmti.model.User;
 import is.hi.skemmti.service.UserService;
 import is.hi.skemmti.utils.Validation;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -53,6 +55,12 @@ public class UserController {
     @GetMapping("/user/{userId}")
     public User getUser(@PathVariable Long userId) {
         return userService.getUser(userId);
+    }
+
+    // EXAMPLE: How to get currently logged in user - TBD if this should be kept 
+    @GetMapping("/user")
+    public User getUser(@AuthenticationPrincipal Jwt jwt) {
+        return userService.getUser(jwt.getClaim("uid"));
     }
 
     public void favoriteOrganizer(Long memberId, Long organizerId) {
