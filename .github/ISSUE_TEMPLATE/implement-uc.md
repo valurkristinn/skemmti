@@ -4,7 +4,6 @@ about: Implement UC issue template
 title: 'Implement UC: '
 labels: ''
 assignees: ''
-type: Feature
 
 ---
 
