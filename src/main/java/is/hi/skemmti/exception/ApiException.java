@@ -22,6 +22,12 @@ public class ApiException extends ErrorResponseException {
     }
   }
 
+  public static class Forbidden extends ApiException {
+    public Forbidden(String message) {
+      super(HttpStatus.FORBIDDEN, message);
+    }
+  }
+
   public static class Conflict extends ApiException {
     public Conflict(String message) {
       super(HttpStatus.CONFLICT, message);
