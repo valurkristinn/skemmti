@@ -2,9 +2,12 @@ package is.hi.skemmti.controller;
 
 import is.hi.skemmti.model.Event;
 import is.hi.skemmti.model.User;
+import is.hi.skemmti.model.OrganizerRequest;
 import is.hi.skemmti.service.UserService;
+import is.hi.skemmti.service.OrganizerRequestService;
 import is.hi.skemmti.utils.Validation;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
@@ -23,6 +27,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final OrganizerRequestService organizerRequestService;
     private final JwtEncoder jwtEncoder;
 
     private static final int TOKEN_LIFETIME = 1209600; // 60*60*24*14=1209600, 14 days
@@ -32,8 +37,9 @@ public class UserController {
         public String password;
     }
 
-    public UserController(UserService userService, JwtEncoder jwtEncoder) {
+    public UserController(UserService userService, OrganizerRequestService organizerRequestService, JwtEncoder jwtEncoder) {
         this.userService = userService;
+        this.organizerRequestService = organizerRequestService;
         this.jwtEncoder = jwtEncoder;
     }
 
@@ -50,6 +56,15 @@ public class UserController {
 
         User user = userService.signup(req.username, req.password);
         return createToken(user);
+    }
+
+    @PostMapping("/signup/org")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public OrganizerRequest signupOrganizer(@RequestBody LoginRequest req) {
+        Validation.validateLength(req.password, "Password", 8, 32);
+        Validation.validateLength(req.username, "Username", 3, 32);
+
+        return organizerRequestService.createRequest(req.username, req.password);
     }
 
     @GetMapping("/user/{userId}")
