@@ -23,7 +23,6 @@ public class EventController {
 
     private final EventService eventService;
 
-    // What a client is allowed to send when publishing an event
     public static class EventRequest {
         public String name;
         public LocalDate date;
