@@ -19,6 +19,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findByRole(Role role);
 
+    List<User> findByAttendingEvents_EventId(Long eventId);
+
     User save(User user);
 
     void delete(User user);

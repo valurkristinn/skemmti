@@ -1,11 +1,17 @@
 package is.hi.skemmti.service.impl;
 
+import is.hi.skemmti.exception.ApiException.Forbidden;
+import is.hi.skemmti.exception.ApiException.InvalidData;
+import is.hi.skemmti.exception.ApiException.NotFound;
 import is.hi.skemmti.model.Event;
+import is.hi.skemmti.model.Role;
 import is.hi.skemmti.model.User;
 import is.hi.skemmti.repository.EventRepository;
 import is.hi.skemmti.repository.UserRepository;
 import is.hi.skemmti.service.EventService;
+import is.hi.skemmti.utils.Validation;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -46,8 +52,24 @@ public class EventServiceImplementation implements EventService {
 
     @Override
     public Event createEvent(Long organizerId, Event event) {
-        // TODO: útfæra - athuga að organizerId hafi Role.ORGANIZER áður en viðburður er búinn til
-        return null;
+        User organizer = userRepository.findById(organizerId)
+                .orElseThrow(() -> new NotFound("User not found"));
+
+        if (organizer.getRole() != Role.ORGANIZER)
+            throw new Forbidden("Only organizers can publish events");
+
+        Validation.validateLength(event.getName(), "Name", 1, 100);
+        Validation.validateLength(event.getLocation(), "Location", 1, 100);
+        if (event.getDate() == null)
+            throw new InvalidData("Date is required");
+        if (event.getStartTime() == null)
+            throw new InvalidData("Start time is required");
+
+        event.setEventId(null);
+        event.setOrganizer(organizer);
+        event.setPublished(true);
+
+        return eventRepository.save(event);
     }
 
     @Override
@@ -62,8 +84,19 @@ public class EventServiceImplementation implements EventService {
     }
 
     @Override
+    @Transactional
     public void deleteOwnEvent(Long organizerId, Long eventId) {
-        // TODO: útfæra - athuga að viðburðurinn tilheyri þessum skipuleggjanda
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFound("Event not found"));
+
+        if (!event.getOrganizer().getUserId().equals(organizerId))
+            throw new Forbidden("You can only delete your own events");
+
+        for (User attendee : userRepository.findByAttendingEvents_EventId(eventId)) {
+            attendee.getAttendingEvents().remove(event);
+        }
+
+        eventRepository.delete(event);
     }
 
     @Override
