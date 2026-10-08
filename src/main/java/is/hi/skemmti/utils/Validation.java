@@ -1,6 +1,7 @@
 package is.hi.skemmti.utils;
 
 import is.hi.skemmti.exception.ApiException.InvalidData;
+import is.hi.skemmti.model.Event;
 
 
 public class Validation {
@@ -20,5 +21,9 @@ public class Validation {
             throw new InvalidData("Date is required");
         if (event.getStartTime() == null)
             throw new InvalidData("Start time is required");
+        if (event.getDescription() != null)
+            validateLength(event.getDescription(), "Description", 0, 255);
+        if (event.getTag() != null)
+            validateLength(event.getTag(), "Tag", 0, 255);
     }
 }

@@ -39,8 +39,6 @@ public class EventController {
         this.eventService = eventService;
     }
 
-    // TODO: bæta við @GetMapping/@PostMapping/@PutMapping/@DeleteMapping o.fl. þegar endapunktar eru ákveðnir
-
     public Event getEvent(Long eventId) {
         // TODO: útfæra
         return null;

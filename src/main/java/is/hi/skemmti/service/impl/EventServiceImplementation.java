@@ -1,7 +1,6 @@
 package is.hi.skemmti.service.impl;
 
 import is.hi.skemmti.exception.ApiException.Forbidden;
-import is.hi.skemmti.exception.ApiException.InvalidData;
 import is.hi.skemmti.exception.ApiException.NotFound;
 import is.hi.skemmti.model.Event;
 import is.hi.skemmti.model.Role;
@@ -9,13 +8,9 @@ import is.hi.skemmti.model.User;
 import is.hi.skemmti.repository.EventRepository;
 import is.hi.skemmti.repository.UserRepository;
 import is.hi.skemmti.service.EventService;
-import is.hi.skemmti.utils.Validation;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -62,14 +57,6 @@ public class EventServiceImplementation implements EventService {
         if (organizer.getRole() != Role.ORGANIZER)
             throw new Forbidden("Only organizers can publish events");
 
-        // Validation.validateLength(event.getName(), "Name", 1, 100);
-        // Validation.validateLength(event.getLocation(), "Location", 1, 100);
-        // if (event.getDate() == null)
-        //     throw new InvalidData("Date is required");
-        // if (event.getStartTime() == null)
-        //     throw new InvalidData("Start time is required");
-        // tók út því validation fer fram í controller
-
         event.setEventId(null);
         event.setOrganizer(organizer);
         event.setPublished(true);
@@ -92,7 +79,6 @@ public class EventServiceImplementation implements EventService {
         existing.setDescription(updated.getDescription());
         existing.setTag(updated.getTag());
         existing.setImage(updated.getImage());
-        // open issue: ætti edit að breyta event id?
 
         return eventRepository.save(existing);
     }
