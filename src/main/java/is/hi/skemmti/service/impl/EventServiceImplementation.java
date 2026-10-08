@@ -1,7 +1,6 @@
 package is.hi.skemmti.service.impl;
 
 import is.hi.skemmti.exception.ApiException.Forbidden;
-import is.hi.skemmti.exception.ApiException.InvalidData;
 import is.hi.skemmti.exception.ApiException.NotFound;
 import is.hi.skemmti.model.Event;
 import is.hi.skemmti.model.Role;
@@ -9,7 +8,7 @@ import is.hi.skemmti.model.User;
 import is.hi.skemmti.repository.EventRepository;
 import is.hi.skemmti.repository.UserRepository;
 import is.hi.skemmti.service.EventService;
-import is.hi.skemmti.utils.Validation;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,13 +57,6 @@ public class EventServiceImplementation implements EventService {
         if (organizer.getRole() != Role.ORGANIZER)
             throw new Forbidden("Only organizers can publish events");
 
-        Validation.validateLength(event.getName(), "Name", 1, 100);
-        Validation.validateLength(event.getLocation(), "Location", 1, 100);
-        if (event.getDate() == null)
-            throw new InvalidData("Date is required");
-        if (event.getStartTime() == null)
-            throw new InvalidData("Start time is required");
-
         event.setEventId(null);
         event.setOrganizer(organizer);
         event.setPublished(true);
@@ -73,9 +65,22 @@ public class EventServiceImplementation implements EventService {
     }
 
     @Override
-    public Event editEvent(Long organizerId, Long eventId, Event event) {
-        // TODO: útfæra - athuga að viðburðurinn tilheyri þessum skipuleggjanda
-        return null;
+    public Event editEvent(Long organizerId, Long eventId, Event updated) {
+        Event existing = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFound("Event not found"));
+
+        if (!existing.getOrganizer().getUserId().equals(organizerId))
+            throw new Forbidden("You can only edit your own events");
+
+        existing.setName(updated.getName());
+        existing.setDate(updated.getDate());
+        existing.setStartTime(updated.getStartTime());
+        existing.setLocation(updated.getLocation());
+        existing.setDescription(updated.getDescription());
+        existing.setTag(updated.getTag());
+        existing.setImage(updated.getImage());
+
+        return eventRepository.save(existing);
     }
 
     @Override

@@ -3,6 +3,7 @@ package is.hi.skemmti.controller;
 import is.hi.skemmti.model.Event;
 import is.hi.skemmti.model.User;
 import is.hi.skemmti.service.EventService;
+import is.hi.skemmti.utils.Validation;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,8 +39,6 @@ public class EventController {
         this.eventService = eventService;
     }
 
-    // TODO: bæta við @GetMapping/@PostMapping/@PutMapping/@DeleteMapping o.fl. þegar endapunktar eru ákveðnir
-
     public Event getEvent(Long eventId) {
         // TODO: útfæra
         return null;
@@ -62,27 +62,30 @@ public class EventController {
     @PostMapping("/event/publish")
     @ResponseStatus(HttpStatus.CREATED)
     public Event createEvent(@AuthenticationPrincipal Jwt jwt, @RequestBody EventRequest req) {
-        Event event = new Event();
-        event.setName(req.name);
-        event.setDate(req.date);
-        event.setStartTime(req.startTime);
-        event.setLocation(req.location);
-        event.setDescription(req.description);
-        event.setTag(req.tag);
-        event.setImage(req.image);
+        Event event = toEvent(req);
+        Validation.validateEvent(event);
 
         Long organizerId = jwt.getClaim("uid");
         return eventService.createEvent(organizerId, event);
     }
 
-    public Event editEvent(Long organizerId, Long eventId, Event event) {
-        // TODO: útfæra
-        return null;
+    @PutMapping("/event/{eventId}")
+    public Event editEvent(@AuthenticationPrincipal Jwt jwt,
+                            @PathVariable Long eventId,
+                            @RequestBody EventRequest req) {
+
+        Event updated = toEvent(req);
+        Validation.validateEvent(updated);
+
+        Long organizerId = jwt.getClaim("uid");
+        return eventService.editEvent(organizerId, eventId, updated);
     }
+
 
     public void deleteEvent(Long adminId, Long eventId) {
         // TODO: útfæra
     }
+
 
     @DeleteMapping("/event/delete/{eventId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -110,5 +113,17 @@ public class EventController {
 
     public void unpublish(Long userId, Long eventId) {
         // TODO: útfæra
+    }
+
+    private Event toEvent(EventRequest req) {
+        Event event = new Event();
+        event.setName(req.name);
+        event.setDate(req.date);
+        event.setStartTime(req.startTime);
+        event.setLocation(req.location);
+        event.setDescription(req.description);
+        event.setTag(req.tag);
+        event.setImage(req.image);
+        return event;
     }
 }
