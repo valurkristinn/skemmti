@@ -2,6 +2,7 @@ package is.hi.skemmti.service.impl;
 
 import is.hi.skemmti.exception.ApiException.Conflict;
 import is.hi.skemmti.exception.ApiException.NotFound;
+import is.hi.skemmti.exception.ApiException.Forbidden;
 import is.hi.skemmti.model.Event;
 import is.hi.skemmti.model.Role;
 import is.hi.skemmti.model.User;
@@ -11,6 +12,7 @@ import is.hi.skemmti.service.UserService;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -66,24 +68,56 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
+    @Transactional
     public void favoriteOrganizer(Long memberId, Long organizerId) {
-        // TODO: útfæra
+        User user = userRepository.findById(memberId)
+                .orElseThrow(() -> new NotFound("User not found"));
+        User organizer = userRepository.findById(organizerId)
+                .orElseThrow(() -> new NotFound("Organizer not found"));
+
+        if (user.getRole() != Role.MEMBER) {
+            throw new Forbidden("Only members can have favourites");
+        }
+        if (organizer.getRole() != Role.ORGANIZER) {
+            throw new Forbidden("Only organizers can be favourited");
+        }
+
+        List<User> favourites = user.getFavoriteOrganizers();
+
+        if (favourites.contains(organizer)) {
+            throw new Conflict("This organizer is already a favourite");
+        }
+
+        favourites.add(organizer);
     }
 
     @Override
+    @Transactional
     public void unfavoriteOrganizer(Long memberId, Long organizerId) {
-        // TODO: útfæra
+        User user = userRepository.findById(memberId)
+                .orElseThrow(() -> new NotFound("User not found"));
+        User organizer = userRepository.findById(organizerId)
+                .orElseThrow(() -> new NotFound("Organizer not found"));
+
+        List<User> favourites = user.getFavoriteOrganizers();
+
+        if (!favourites.remove(organizer)) {
+            throw new NotFound("This organizer is not a favourite");
+        }
     }
 
     @Override
     public List<User> getFavoriteOrganizers(Long memberId) {
-        // TODO: útfæra
-        return null;
+        User user = userRepository.findById(memberId)
+                .orElseThrow(() -> new NotFound("User not found"));
+        return user.getFavoriteOrganizers();
     }
 
     @Override
     public List<Event> getAttendingEvents(Long memberId) {
-        // TODO: útfæra
-        return null;
+        User user = userRepository.findById(memberId)
+                .orElseThrow(() -> new NotFound("This user does not exist"));
+
+        return user.getAttendingEvents();
     }
 }
