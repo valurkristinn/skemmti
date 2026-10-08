@@ -91,17 +91,24 @@ public class EventController {
         eventService.deleteOwnEvent(organizerId, eventId);
     }
 
-    public void markGoing(Long memberId, Long eventId) {
-        // TODO: útfæra
+    @PostMapping("/event/{eventId}/going")
+    public void markGoing(@AuthenticationPrincipal Jwt jwt, @PathVariable Long eventId) {
+        eventService.markGoing(jwt.getClaim("uid"), eventId);
     }
 
-    public void cancelGoing(Long memberId, Long eventId) {
-        // TODO: útfæra
+    @PostMapping("/event/{eventId}/notgoing")
+    public void cancelGoing(@AuthenticationPrincipal Jwt jwt, @PathVariable Long eventId) {
+        eventService.cancelGoing(jwt.getClaim("uid"), eventId);
     }
 
-    public List<User> getAttendingMembers(Long eventId) {
-        // TODO: útfæra
-        return null;
+    @GetMapping("/event/{eventId}/going")
+    public List<User> getAttendees(@PathVariable Long eventId) {
+        return eventService.getAttendees(eventId);
+    }
+
+    @GetMapping("/event/{eventId}/going/count")
+    public long getAttendeeCount(@PathVariable Long eventId) {
+        return eventService.getAttendeeCount(eventId);
     }
 
     public void publish(Long userId, Long eventId) {

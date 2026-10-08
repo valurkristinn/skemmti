@@ -28,7 +28,9 @@ public interface EventService {
 
     void cancelGoing(Long memberId, Long eventId);
 
-    List<User> getAttendingMembers(Long eventId);
+    List<User> getAttendees(Long eventId);
+
+    long getAttendeeCount(Long eventId);
 
     void publish(Long userId, Long eventId);
 

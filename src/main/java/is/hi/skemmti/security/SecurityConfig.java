@@ -28,7 +28,8 @@ public class SecurityConfig {
 
     private static final String[] PUBLIC_PATHS = {
             "/event",
-            "/event/{eventId}"
+            "/event/{eventId}",
+            "/event/{eventId}/going/count",
     };
 
     private final SecretKey key;

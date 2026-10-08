@@ -3,6 +3,7 @@ package is.hi.skemmti.service.impl;
 import is.hi.skemmti.exception.ApiException.Forbidden;
 import is.hi.skemmti.exception.ApiException.InvalidData;
 import is.hi.skemmti.exception.ApiException.NotFound;
+import is.hi.skemmti.exception.ApiException.Conflict;
 import is.hi.skemmti.model.Event;
 import is.hi.skemmti.model.Role;
 import is.hi.skemmti.model.User;
@@ -100,19 +101,55 @@ public class EventServiceImplementation implements EventService {
     }
 
     @Override
+    @Transactional
     public void markGoing(Long memberId, Long eventId) {
-        // TODO: útfæra
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFound("Event not found"));
+        User user = userRepository.findById(memberId)
+                .orElseThrow(() -> new NotFound("User not found"));
+
+        if (user.getRole() != Role.MEMBER) {
+            throw new Forbidden("Only members can set status to going");
+        }
+
+        List<Event> going = user.getAttendingEvents();
+
+        if (going.contains(event)) {
+            throw new Conflict("User already marked as going");
+        }
+
+        going.add(event);
     }
 
     @Override
+    @Transactional
     public void cancelGoing(Long memberId, Long eventId) {
-        // TODO: útfæra
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFound("Event not found"));
+        User user = userRepository.findById(memberId)
+                .orElseThrow(() -> new NotFound("User not found"));
+
+        List<Event> going = user.getAttendingEvents();
+
+        if (!going.remove(event)) {
+            throw new NotFound("User is not marked as going");
+        }
     }
 
     @Override
-    public List<User> getAttendingMembers(Long eventId) {
-        // TODO: útfæra
-        return null;
+    public List<User> getAttendees(Long eventId) {
+        eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFound("Event not found"));
+
+        return userRepository.findByAttendingEvents_EventId(eventId);
+    }
+
+    @Override
+    public long getAttendeeCount(Long eventId) {
+        eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFound("Event not found"));
+
+        return userRepository.countByAttendingEvents_EventId(eventId);
     }
 
     @Override
