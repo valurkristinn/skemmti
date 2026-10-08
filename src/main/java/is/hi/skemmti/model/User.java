@@ -32,7 +32,10 @@ public class User {
 
     @JsonIgnore
     private String password;
+
+    @Column(length = 2_000_000) // Hér er þá hámarksstærð myndarinnar sem geymd er í gagnagrunninum 2 MB
     private String image;
+
     private String description;
 
     @Enumerated(EnumType.STRING)

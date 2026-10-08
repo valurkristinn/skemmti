@@ -25,5 +25,6 @@ public class Validation {
             validateLength(event.getDescription(), "Description", 0, 255);
         if (event.getTag() != null)
             validateLength(event.getTag(), "Tag", 0, 255);
+        ImageUtil.validate(event.getImage());
     }
 }
