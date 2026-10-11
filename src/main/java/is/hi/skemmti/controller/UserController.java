@@ -30,7 +30,7 @@ public class UserController {
     private final OrganizerRequestService organizerRequestService;
     private final JwtEncoder jwtEncoder;
 
-    private static final int TOKEN_LIFETIME = 1209600; // 60*60*24*14=1209600, 14 days
+    private static final int TOKEN_LIFETIME = 86400; // 60*60*24=86400, 1 day
 
     public static class LoginRequest {
         public String username;
@@ -78,22 +78,24 @@ public class UserController {
         return userService.getUser(jwt.getClaim("uid"));
     }
 
-    public void favoriteOrganizer(Long memberId, Long organizerId) {
-        // TODO: útfæra
+    @PostMapping("/user/favourite/{organizerId}")
+    public void favoriteOrganizer(@AuthenticationPrincipal Jwt jwt, @PathVariable Long organizerId) {
+        userService.favoriteOrganizer(jwt.getClaim("uid"), organizerId);
     }
 
-    public void unfavoriteOrganizer(Long memberId, Long organizerId) {
-        // TODO: útfæra
+    @PostMapping("/user/unfavourite/{organizerId}")
+    public void unfavoriteOrganizer(@AuthenticationPrincipal Jwt jwt, @PathVariable Long organizerId) {
+        userService.unfavoriteOrganizer(jwt.getClaim("uid"), organizerId);
     }
 
-    public List<User> getFavoriteOrganizers(Long memberId) {
-        // TODO: útfæra
-        return null;
+    @GetMapping("/user/favourite")
+    public List<User> getFavoriteOrganizers(@AuthenticationPrincipal Jwt jwt) {
+        return userService.getFavoriteOrganizers(jwt.getClaim("uid"));
     }
 
-    public List<Event> getAttendingEvents(Long memberId) {
-        // TODO: útfæra
-        return null;
+    @GetMapping("/user/going")
+    public List<Event> getAttendingEvents(@AuthenticationPrincipal Jwt jwt) {
+        return userService.getAttendingEvents(jwt.getClaim("uid"));
     }
 
     private String createToken(User user) {
