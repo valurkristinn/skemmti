@@ -30,10 +30,10 @@ Nothing persists between runs.
 Seeded users (all with password `passw`):
 
 | role | username | userId |
-| --- | --- | --- |
-| ADMIN | `admin` | 1 |
-| ORGANIZER | `Oktoberfest` | 2 |
-| MEMBER | `Jon Jonsson` | 3 |
+| --- | ---| ---|
+| admin | "admin" | 1 |
+| organizer | "Oktoberfest"| 2 |
+|member | "Jon Jonsson"| 3|
 
 Users and events created at runtime get ids from 100 upwards.
 
