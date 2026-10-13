@@ -4,9 +4,12 @@ Description coming soon...
 
 ---
 
-run the program with
+clone and run the program with
 
 ``` 
+git clone https://github.com/valurkristinn/skemmti.git
+cd skemmti
+cp .env.example .env
 mvn spring-boot:run 
 ```
 
@@ -34,6 +37,10 @@ POST /login
     "password": "passw",
 }
 ```
+
+see [dev.md](docs/dev.md) for development info
+
+see [api.md](docs/api.md) for info on available endpoints
 
 ---
 
