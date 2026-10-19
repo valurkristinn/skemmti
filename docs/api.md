@@ -10,6 +10,7 @@
 - `POST /user/unfavourite/{organizerId}`
 - `GET /user/going`
 - `GET /event`
+- `GET /event/{eventId}`
 - `POST /event/publish`
 - `PUT /event/{eventId}`
 - `DELETE /event/delete/{eventId}`
