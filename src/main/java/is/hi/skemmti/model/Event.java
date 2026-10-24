@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -32,8 +33,8 @@ public class Event {
     private LocalTime startTime;
     private String location;
     private String description;
-    private String tag;
-    
+    private List<String> tags;
+
     @Column(length = 2_000_000)
     private String image;
 

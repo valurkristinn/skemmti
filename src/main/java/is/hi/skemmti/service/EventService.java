@@ -2,8 +2,8 @@ package is.hi.skemmti.service;
 
 import is.hi.skemmti.model.Event;
 import is.hi.skemmti.model.User;
+import is.hi.skemmti.controller.EventController.EventSearch;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface EventService {
@@ -12,9 +12,7 @@ public interface EventService {
 
     List<Event> getAllEvents();
 
-    List<Event> searchEventsByDate(LocalDate date);
-
-    List<Event> searchEventsByOrganizer(Long organizerId);
+    List<Event> searchEvents(EventSearch e);
 
     Event createEvent(Long organizerId, Event event);
 
