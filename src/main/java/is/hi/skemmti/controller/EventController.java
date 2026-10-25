@@ -3,7 +3,9 @@ package is.hi.skemmti.controller;
 import is.hi.skemmti.model.Event;
 import is.hi.skemmti.model.User;
 import is.hi.skemmti.service.EventService;
+import is.hi.skemmti.utils.General;
 import is.hi.skemmti.utils.Validation;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,8 +34,16 @@ public class EventController {
         public LocalTime startTime;
         public String location;
         public String description;
-        public String tag;
+        public List<String> tags;
         public String image;
+    }
+
+    public record EventSearch(
+            String searchTerm,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate afterDate,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate beforeDate,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime afterTime,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime beforeTime) {
     }
 
     public EventController(EventService eventService) {
@@ -45,21 +56,20 @@ public class EventController {
     }
 
     @GetMapping("/event")
-    public List<Event> getAllEvents() {
-        return eventService.getAllEvents();
+    public List<Event> getAllEvents(@RequestParam(required = false) Integer offset,
+            @RequestParam(required = false) Integer limit) {
+        return General.paginate(eventService.getAllEvents(), offset, limit);
     }
 
-    public List<Event> searchEventsByDate(LocalDate date) {
-        // TODO: útfæra
-        return null;
+    // since EventSearch is a record it spreads each item as @RequestParam
+    @GetMapping("/event/search")
+    public List<Event> searchEvents(EventSearch search,
+            @RequestParam(required = false) Integer offset,
+            @RequestParam(required = false) Integer limit) {
+        return General.paginate(eventService.searchEvents(search), offset, limit);
     }
 
-    public List<Event> searchEventsByOrganizer(Long organizerId) {
-        // TODO: útfæra
-        return null;
-    }
-
-    @PostMapping("/event/publish")
+    @PostMapping("/event")
     @ResponseStatus(HttpStatus.CREATED)
     public Event createEvent(@AuthenticationPrincipal Jwt jwt, @RequestBody EventRequest req) {
         Event event = toEvent(req);
@@ -71,8 +81,8 @@ public class EventController {
 
     @PutMapping("/event/{eventId}")
     public Event editEvent(@AuthenticationPrincipal Jwt jwt,
-                            @PathVariable Long eventId,
-                            @RequestBody EventRequest req) {
+            @PathVariable Long eventId,
+            @RequestBody EventRequest req) {
 
         Event updated = toEvent(req);
         Validation.validateEvent(updated);
@@ -81,13 +91,11 @@ public class EventController {
         return eventService.editEvent(organizerId, eventId, updated);
     }
 
-
     public void deleteEvent(Long adminId, Long eventId) {
         // TODO: útfæra
     }
 
-
-    @DeleteMapping("/event/delete/{eventId}")
+    @DeleteMapping("/event/{eventId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOwnEvent(@AuthenticationPrincipal Jwt jwt, @PathVariable Long eventId) {
         Long organizerId = jwt.getClaim("uid");
@@ -129,7 +137,7 @@ public class EventController {
         event.setStartTime(req.startTime);
         event.setLocation(req.location);
         event.setDescription(req.description);
-        event.setTag(req.tag);
+        event.setTags(req.tags);
         event.setImage(req.image);
         return event;
     }
