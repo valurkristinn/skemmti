@@ -2,6 +2,7 @@ package is.hi.skemmti.service.impl;
 
 import is.hi.skemmti.exception.ApiException.Forbidden;
 import is.hi.skemmti.exception.ApiException.NotFound;
+import is.hi.skemmti.controller.EventController.EventSearch;
 import is.hi.skemmti.exception.ApiException.Conflict;
 import is.hi.skemmti.model.Event;
 import is.hi.skemmti.model.Role;
@@ -13,7 +14,6 @@ import is.hi.skemmti.service.EventService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -36,19 +36,17 @@ public class EventServiceImplementation implements EventService {
 
     @Override
     public List<Event> getAllEvents() {
-        return eventRepository.findAll();
+        return eventRepository.findByPublishedTrue();
     }
 
     @Override
-    public List<Event> searchEventsByDate(LocalDate date) {
-        // TODO: útfæra
-        return null;
+    public List<Event> searchEvents(EventSearch e) {
+        return eventRepository.search(toLikePattern(e.searchTerm()), e.beforeDate(), e.afterDate(),
+                e.beforeTime(), e.afterTime());
     }
 
-    @Override
-    public List<Event> searchEventsByOrganizer(Long organizerId) {
-        // TODO: útfæra
-        return null;
+    private static String toLikePattern(String term) {
+        return term == null ? null : "%" + term.toLowerCase() + "%";
     }
 
     @Override
@@ -79,7 +77,7 @@ public class EventServiceImplementation implements EventService {
         existing.setStartTime(updated.getStartTime());
         existing.setLocation(updated.getLocation());
         existing.setDescription(updated.getDescription());
-        existing.setTag(updated.getTag());
+        existing.setTags(updated.getTags());
         existing.setImage(updated.getImage());
 
         return eventRepository.save(existing);
@@ -160,11 +158,13 @@ public class EventServiceImplementation implements EventService {
 
     @Override
     public void publish(Long userId, Long eventId) {
-        // TODO: útfæra - athuga að userId sé skipuleggjandi viðburðarins áður en birt er
+        // TODO: útfæra - athuga að userId sé skipuleggjandi viðburðarins áður en birt
+        // er
     }
 
     @Override
     public void unpublish(Long userId, Long eventId) {
-        // TODO: útfæra - athuga að userId sé skipuleggjandi viðburðarins áður en falið er
+        // TODO: útfæra - athuga að userId sé skipuleggjandi viðburðarins áður en falið
+        // er
     }
 }
