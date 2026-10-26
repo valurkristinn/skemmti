@@ -50,9 +50,9 @@ public class EventController {
         this.eventService = eventService;
     }
 
-    public Event getEvent(Long eventId) {
-        // TODO: útfæra
-        return null;
+    @GetMapping("/event/{eventId}")
+    public Event getEvent(@PathVariable Long eventId) {
+        return eventService.getEvent(eventId);
     }
 
     @GetMapping("/event")

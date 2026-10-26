@@ -29,8 +29,9 @@ public class EventServiceImplementation implements EventService {
 
     @Override
     public Event getEvent(Long eventId) {
-        // TODO: útfæra
-        return null;
+        return eventRepository.findById(eventId)
+            .filter(Event::isPublished)
+            .orElseThrow(() -> new NotFound("Event not found"));
     }
 
     @Override
