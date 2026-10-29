@@ -68,6 +68,13 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
+    public User getOrganizer(Long organizerId) {
+        return userRepository.findById(organizerId)
+                .filter(user -> user.getRole() == Role.ORGANIZER)
+                .orElseThrow(() -> new NotFound("Organizer not found"));
+    }
+
+    @Override
     @Transactional
     public void favoriteOrganizer(Long memberId, Long organizerId) {
         User user = userRepository.findById(memberId)
