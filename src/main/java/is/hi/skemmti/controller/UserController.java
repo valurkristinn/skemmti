@@ -3,6 +3,7 @@ package is.hi.skemmti.controller;
 import is.hi.skemmti.model.Event;
 import is.hi.skemmti.model.User;
 import is.hi.skemmti.model.OrganizerRequest;
+import is.hi.skemmti.model.OrganizerProfile;
 import is.hi.skemmti.service.UserService;
 import is.hi.skemmti.service.OrganizerRequestService;
 import is.hi.skemmti.utils.Validation;
@@ -70,6 +71,11 @@ public class UserController {
     @GetMapping("/user/{userId}")
     public User getUser(@PathVariable Long userId) {
         return userService.getUser(userId);
+    }
+
+    @GetMapping("/org/{orgId}")
+    public OrganizerProfile getOrganizer(@PathVariable Long orgId) {
+        return OrganizerProfile.from(userService.getOrganizer(orgId));
     }
 
     // EXAMPLE: How to get currently logged in user - TBD if this should be kept 

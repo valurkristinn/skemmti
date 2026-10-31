@@ -2,6 +2,7 @@ package is.hi.skemmti.controller;
 
 import is.hi.skemmti.model.Event;
 import is.hi.skemmti.model.User;
+import is.hi.skemmti.model.OrganizerProfile;
 import is.hi.skemmti.service.EventService;
 import is.hi.skemmti.utils.General;
 import is.hi.skemmti.utils.Validation;
@@ -53,6 +54,11 @@ public class EventController {
     @GetMapping("/event/{eventId}")
     public Event getEvent(@PathVariable Long eventId) {
         return eventService.getEvent(eventId);
+    }
+
+    @GetMapping("/event/{eventId}/org")
+    public OrganizerProfile getEventOrganizer(@PathVariable Long eventId) {
+        return OrganizerProfile.from(eventService.getEventOrganizer(eventId));
     }
 
     @GetMapping("/event")

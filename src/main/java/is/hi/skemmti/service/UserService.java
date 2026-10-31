@@ -13,6 +13,8 @@ public interface UserService {
 
     User getUser(Long userId);
 
+    User getOrganizer(Long organizerId);
+
     void favoriteOrganizer(Long memberId, Long organizerId);
 
     void unfavoriteOrganizer(Long memberId, Long organizerId);
