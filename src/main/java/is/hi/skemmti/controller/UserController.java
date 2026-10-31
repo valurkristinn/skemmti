@@ -2,6 +2,7 @@ package is.hi.skemmti.controller;
 
 import is.hi.skemmti.model.Event;
 import is.hi.skemmti.model.User;
+import is.hi.skemmti.model.UserProfile;
 import is.hi.skemmti.model.OrganizerRequest;
 import is.hi.skemmti.model.OrganizerProfile;
 import is.hi.skemmti.service.UserService;
@@ -69,8 +70,8 @@ public class UserController {
     }
 
     @GetMapping("/user/{userId}")
-    public User getUser(@PathVariable Long userId) {
-        return userService.getUser(userId);
+    public UserProfile getUser(@PathVariable Long userId) {
+        return UserProfile.from(userService.getUser(userId));
     }
 
     @GetMapping("/org/{orgId}")
