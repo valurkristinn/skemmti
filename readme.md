@@ -44,11 +44,25 @@ see [api.md](docs/api.md) for info on available endpoints
 
 ---
 
+## Project plan
 
-Frodo was here
+Expected hours
+P.O.
+Sprint
+Consultation
 
-Ýmir líka sjælir
 
-Kristófer alltaf síðastur ;)
 
-Valur líka
+| Week | Planned work | P.O. | Sprint |
+| --- | --- | --- | --- |
+| 1 | Project skeleton, database structure, GitHub setup and project planning | V | 1 |
+| 2 | Class and sequence diagram setup. Decide how layers, classes and APIs work, issue creation, finish UC12 | V | 1 |
+| 3 | Finish class and sequence diagrams and start work on UC4, UC5 and UC6 (signup/login) | F | 2 |
+| 4 | UC8, UC9 and UC11; events, images and event management | F | 2 |
+| 5 | UC3 and UC17; attendance, attendance count and favourites | F | 2 |
+| 6 | UC12 paging, UC14, UC13, UC15; view and search events and see their organizer | Ý | 3 |
+| 7 | UC16, UC7 and UC19; account management and integration work | Ý | 3 |
+| 8 | UC10, UC18 and UC20; admin permissions and admin functionality | Ý | 3 |
+| 9 | System integration, completion of unfinished work and testing | K | 4 |
+| 10 | Bug fixes, usability improvements, documentation and final release | K | 4 |
+
