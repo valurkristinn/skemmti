@@ -6,7 +6,9 @@ import is.hi.skemmti.exception.ApiException.Forbidden;
 import is.hi.skemmti.model.Event;
 import is.hi.skemmti.model.Role;
 import is.hi.skemmti.model.User;
+import is.hi.skemmti.repository.EventRepository;
 import is.hi.skemmti.repository.UserRepository;
+import is.hi.skemmti.service.EventService;
 import is.hi.skemmti.service.UserService;
 
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,10 +23,15 @@ import java.util.Optional;
 public class UserServiceImplementation implements UserService {
 
     private final UserRepository userRepository;
+    private final EventRepository eventRepository;
+    private final EventService eventService;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImplementation(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImplementation(UserRepository userRepository, EventRepository eventRepository,
+            EventService eventService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
+        this.eventService = eventService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -126,5 +133,33 @@ public class UserServiceImplementation implements UserService {
                 .orElseThrow(() -> new NotFound("This user does not exist"));
 
         return user.getAttendingEvents();
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long requesterId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFound("User not found"));
+        User requester = userRepository.findById(requesterId)
+                .orElseThrow(() -> new NotFound("User not found"));
+
+        boolean isSelf = requesterId.equals(userId);
+        boolean isAdmin = requester.getRole() == Role.ADMIN;
+
+        if (!isSelf && !isAdmin)
+            throw new Forbidden("You can only delete your own account");
+        if (isSelf && isAdmin)
+            throw new Forbidden("Admins cannot delete themselves");
+
+        // deleteOwnEvent also removes the event from every user's attendingEvents
+        for (Event event : eventRepository.findByOrganizer_UserId(userId)) {
+            eventService.deleteOwnEvent(userId, event.getEventId());
+        }
+
+        for (User member : userRepository.findByFavoriteOrganizers_UserId(userId)) {
+            member.getFavoriteOrganizers().remove(user);
+        }
+
+        userRepository.delete(user);
     }
 }
