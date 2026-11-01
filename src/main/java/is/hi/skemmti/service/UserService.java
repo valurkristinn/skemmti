@@ -22,4 +22,6 @@ public interface UserService {
     List<User> getFavoriteOrganizers(Long memberId);
 
     List<Event> getAttendingEvents(Long memberId);
+
+    void deleteUser(Long requesterId, Long userId);
 }

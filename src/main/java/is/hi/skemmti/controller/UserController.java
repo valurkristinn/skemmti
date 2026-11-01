@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -103,6 +104,17 @@ public class UserController {
     @GetMapping("/user/going")
     public List<Event> getAttendingEvents(@AuthenticationPrincipal Jwt jwt) {
         return userService.getAttendingEvents(jwt.getClaim("uid"));
+    }
+
+    @DeleteMapping("/user")
+    public void deleteOwnAccount(@AuthenticationPrincipal Jwt jwt) {
+        Long userId = jwt.getClaim("uid");
+        userService.deleteUser(userId, userId);
+    }
+
+    @DeleteMapping("/user/{userId}")
+    public void deleteUser(@AuthenticationPrincipal Jwt jwt, @PathVariable Long userId) {
+        userService.deleteUser(jwt.getClaim("uid"), userId);
     }
 
     private String createToken(User user) {

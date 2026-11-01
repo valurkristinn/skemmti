@@ -23,6 +23,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     long countByAttendingEvents_EventId(Long eventId);
 
+    List<User> findByFavoriteOrganizers_UserId(Long organizerId);
+
     User save(User user);
 
     void delete(User user);
