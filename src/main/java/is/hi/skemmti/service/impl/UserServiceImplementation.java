@@ -10,6 +10,8 @@ import is.hi.skemmti.repository.EventRepository;
 import is.hi.skemmti.repository.UserRepository;
 import is.hi.skemmti.service.EventService;
 import is.hi.skemmti.service.UserService;
+import is.hi.skemmti.controller.UserController.EditUserRequest;
+import is.hi.skemmti.repository.OrganizerRequestRepository;
 
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,13 +26,16 @@ public class UserServiceImplementation implements UserService {
 
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
+    private final OrganizerRequestRepository organizerRequestRepository;
     private final EventService eventService;
     private final PasswordEncoder passwordEncoder;
 
     public UserServiceImplementation(UserRepository userRepository, EventRepository eventRepository,
+            OrganizerRequestRepository organizerRequestRepository,
             EventService eventService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
+        this.organizerRequestRepository = organizerRequestRepository;
         this.eventService = eventService;
         this.passwordEncoder = passwordEncoder;
     }
@@ -161,5 +166,47 @@ public class UserServiceImplementation implements UserService {
         }
 
         userRepository.delete(user);
+    }
+
+    @Override
+    @Transactional
+    public User editUser(Long requesterId, Long userId, EditUserRequest req) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFound("User not found"));
+        User requester = userRepository.findById(requesterId)
+                .orElseThrow(() -> new NotFound("User not found"));
+
+        boolean isSelf = requesterId.equals(userId);
+
+        if (!isSelf) {
+            if (requester.getRole() != Role.ADMIN)
+                throw new Forbidden("You can only edit your own account");
+            if (user.getRole() == Role.ADMIN)
+                throw new Forbidden("Admins cannot edit other admins");
+            if (req.password != null)
+                throw new Forbidden("Admins cannot change other users' passwords");
+        }
+
+        if (req.password != null) {
+            if (req.currentPassword == null || !passwordEncoder.matches(req.currentPassword, user.getPassword()))
+                throw new Forbidden("Current password is incorrect");
+            user.setPassword(passwordEncoder.encode(req.password));
+        }
+
+        if (req.username != null && !req.username.equals(user.getUsername())) {
+            boolean taken = userRepository.findByUsername(req.username).isPresent()
+                    || organizerRequestRepository.existsByUsername(req.username);
+            if (taken)
+                throw new Conflict("Username is already taken");
+            user.setUsername(req.username);
+        }
+
+        if (req.description != null)
+            user.setDescription(req.description.isEmpty() ? null : req.description);
+
+        if (req.image != null)
+            user.setImage(req.image.isEmpty() ? null : req.image);
+
+        return userRepository.save(user);
     }
 }

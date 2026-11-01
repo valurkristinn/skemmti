@@ -1,6 +1,7 @@
 package is.hi.skemmti.utils;
 
 import java.util.List;
+import is.hi.skemmti.controller.UserController.EditUserRequest;
 
 import is.hi.skemmti.exception.ApiException.InvalidData;
 import is.hi.skemmti.model.Event;
@@ -54,5 +55,16 @@ public class Validation {
         }
 
         ImageUtil.validate(event.getImage());
+    }
+
+    public static void validateUserEdit(EditUserRequest req) {
+        if (req.username != null)
+            validateLength(req.username, "Username", 3, 32);
+        if (req.description != null)
+            validateLength(req.description, "Description", 0, 255);
+        if (req.password != null)
+            validateLength(req.password, "Password", 8, 32);
+
+        ImageUtil.validate(req.image);
     }
 }

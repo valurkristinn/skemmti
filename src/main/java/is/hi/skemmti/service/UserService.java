@@ -2,6 +2,7 @@ package is.hi.skemmti.service;
 
 import is.hi.skemmti.model.Event;
 import is.hi.skemmti.model.User;
+import is.hi.skemmti.controller.UserController.EditUserRequest;
 
 import java.util.List;
 
@@ -24,4 +25,6 @@ public interface UserService {
     List<Event> getAttendingEvents(Long memberId);
 
     void deleteUser(Long requesterId, Long userId);
+
+    User editUser(Long requesterId, Long userId, EditUserRequest req);
 }
