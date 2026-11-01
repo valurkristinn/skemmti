@@ -110,6 +110,18 @@ public class EventController {
         return eventService.editEvent(organizerId, eventId, updated);
     }
 
+    @PutMapping("/admin/event/{eventId}")
+    public Event adminEditEvent(@AuthenticationPrincipal Jwt jwt,
+            @PathVariable Long eventId,
+            @RequestBody EventRequest req) {
+
+        Event updated = toEvent(req);
+        Validation.validateEvent(updated);
+
+        Long adminId = jwt.getClaim("uid");
+        return eventService.editEvent(adminId, eventId, updated);
+    }
+
     public void deleteEvent(Long adminId, Long eventId) {
         // TODO: útfæra
     }
