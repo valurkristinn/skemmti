@@ -23,6 +23,26 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findByOrganizer_UserId(Long organizerId);
 
+    List<Event> findByOrganizer_UserIdAndPublishedTrueOrderByDateAscStartTimeAsc(Long organizerId);
+
+    @Query("""
+            SELECT e FROM Event e
+            WHERE e.organizer.userId = :organizerId
+              AND e.published = true
+              AND (e.date > :today OR (e.date = :today AND e.startTime >= :now))
+            ORDER BY e.date ASC, e.startTime ASC
+            """)
+    List<Event> findUpcomingByOrganizer(Long organizerId, LocalDate today, LocalTime now);
+
+    @Query("""
+            SELECT e FROM Event e
+            WHERE e.organizer.userId = :organizerId
+              AND e.published = true
+              AND (e.date < :today OR (e.date = :today AND e.startTime < :now))
+            ORDER BY e.date DESC, e.startTime DESC
+            """)
+    List<Event> findPastByOrganizer(Long organizerId, LocalDate today, LocalTime now);
+
     @Query("""
             SELECT e FROM Event e LEFT JOIN e.organizer o
             WHERE e.published = true

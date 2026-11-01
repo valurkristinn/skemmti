@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Service
 public class EventServiceImplementation implements EventService {
@@ -48,6 +50,22 @@ public class EventServiceImplementation implements EventService {
     @Override
     public List<Event> getAllEvents() {
         return eventRepository.findByPublishedTrue();
+    }
+
+    @Override
+    public List<Event> getOrganizerEvents(Long organizerId, String time) {
+        userRepository.findById(organizerId)
+                .filter(user -> user.getRole() == Role.ORGANIZER)
+                .orElseThrow(() -> new NotFound("Organizer not found"));
+
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+
+        return switch (time) {
+            case "upcoming" -> eventRepository.findUpcomingByOrganizer(organizerId, today, now);
+            case "past" -> eventRepository.findPastByOrganizer(organizerId, today, now);
+            default -> eventRepository.findByOrganizer_UserIdAndPublishedTrueOrderByDateAscStartTimeAsc(organizerId);
+        };
     }
 
     @Override

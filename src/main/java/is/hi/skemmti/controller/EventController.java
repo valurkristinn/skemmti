@@ -6,6 +6,7 @@ import is.hi.skemmti.model.OrganizerProfile;
 import is.hi.skemmti.service.EventService;
 import is.hi.skemmti.utils.General;
 import is.hi.skemmti.utils.Validation;
+import is.hi.skemmti.exception.ApiException.InvalidData;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -65,6 +66,18 @@ public class EventController {
     public List<Event> getAllEvents(@RequestParam(required = false) Integer offset,
             @RequestParam(required = false) Integer limit) {
         return General.paginate(eventService.getAllEvents(), offset, limit);
+    }
+
+    @GetMapping("/org/{orgId}/event")
+    public List<Event> getOrganizerEvents(@PathVariable Long orgId,
+                                          @RequestParam(defaultValue = "all") String time,
+                                          @RequestParam(required = false) Integer offset,
+                                          @RequestParam(required = false) Integer limit) {
+
+        if (!List.of("upcoming", "past", "all").contains(time))
+            throw new InvalidData("time must be upcoming, past or all");
+
+        return General.paginate(eventService.getOrganizerEvents(orgId, time), offset, limit);
     }
 
     // since EventSearch is a record it spreads each item as @RequestParam

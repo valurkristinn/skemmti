@@ -32,6 +32,7 @@ public class SecurityConfig {
             "/event/{eventId}/going/count",
             "/event/{eventId}/org",
             "/org/{orgId}",
+            "/org/{orgId}/event",
     };
 
     private final SecretKey key;
