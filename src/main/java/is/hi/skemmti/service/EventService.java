@@ -14,6 +14,8 @@ public interface EventService {
 
     List<Event> getAllEvents();
 
+    List<Event> getOrganizerEvents(Long organizerId, String time);
+
     List<Event> searchEvents(EventSearch e);
 
     Event createEvent(Long organizerId, Event event);
