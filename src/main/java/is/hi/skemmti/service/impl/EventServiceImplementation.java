@@ -94,11 +94,16 @@ public class EventServiceImplementation implements EventService {
     }
 
     @Override
-    public Event editEvent(Long organizerId, Long eventId, Event updated) {
+    public Event editEvent(Long userId, Long eventId, Event updated) {
         Event existing = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFound("Event not found"));
+        User requester = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFound("User not found"));
 
-        if (!existing.getOrganizer().getUserId().equals(organizerId))
+        boolean isOwner = existing.getOrganizer().getUserId().equals(userId);
+        boolean isAdmin = requester.getRole() == Role.ADMIN;
+
+        if (!isOwner && !isAdmin)
             throw new Forbidden("You can only edit your own events");
 
         existing.setName(updated.getName());

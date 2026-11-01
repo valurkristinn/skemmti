@@ -20,7 +20,7 @@ public interface EventService {
 
     Event createEvent(Long organizerId, Event event);
 
-    Event editEvent(Long organizerId, Long eventId, Event event);
+    Event editEvent(Long userId, Long eventId, Event event);
 
     void deleteEvent(Long adminId, Long eventId);
 
