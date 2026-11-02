@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PatchMapping;
 
 import java.time.Instant;
 import java.util.List;
@@ -38,6 +39,15 @@ public class UserController {
     public static class LoginRequest {
         public String username;
         public String password;
+    }
+
+    // null = unchanged, "" = remove (description, image)
+    public static class EditUserRequest {
+        public String username;
+        public String description;
+        public String image;
+        public String password;
+        public String currentPassword;
     }
 
     public UserController(UserService userService, OrganizerRequestService organizerRequestService, JwtEncoder jwtEncoder) {
@@ -115,6 +125,22 @@ public class UserController {
     @DeleteMapping("/user/{userId}")
     public void deleteUser(@AuthenticationPrincipal Jwt jwt, @PathVariable Long userId) {
         userService.deleteUser(jwt.getClaim("uid"), userId);
+    }
+
+    @PatchMapping("/user")
+    public UserProfile editOwnAccount(@AuthenticationPrincipal Jwt jwt, @RequestBody EditUserRequest req) {
+        Validation.validateUserEdit(req);
+
+        Long userId = jwt.getClaim("uid");
+        return UserProfile.from(userService.editUser(userId, userId, req));
+    }
+
+    @PatchMapping("/user/{userId}")
+    public UserProfile editUser(@AuthenticationPrincipal Jwt jwt, @PathVariable Long userId,
+            @RequestBody EditUserRequest req) {
+        Validation.validateUserEdit(req);
+
+        return UserProfile.from(userService.editUser(jwt.getClaim("uid"), userId, req));
     }
 
     private String createToken(User user) {
