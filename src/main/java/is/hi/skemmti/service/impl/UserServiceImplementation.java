@@ -6,9 +6,8 @@ import is.hi.skemmti.exception.ApiException.Forbidden;
 import is.hi.skemmti.model.Event;
 import is.hi.skemmti.model.Role;
 import is.hi.skemmti.model.User;
-import is.hi.skemmti.repository.EventRepository;
+import is.hi.skemmti.observer.Observable;
 import is.hi.skemmti.repository.UserRepository;
-import is.hi.skemmti.service.EventService;
 import is.hi.skemmti.service.UserService;
 import is.hi.skemmti.controller.UserController.EditUserRequest;
 import is.hi.skemmti.repository.OrganizerRequestRepository;
@@ -25,18 +24,16 @@ import java.util.Optional;
 public class UserServiceImplementation implements UserService {
 
     private final UserRepository userRepository;
-    private final EventRepository eventRepository;
     private final OrganizerRequestRepository organizerRequestRepository;
-    private final EventService eventService;
+    private final Observable userDeleted;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImplementation(UserRepository userRepository, EventRepository eventRepository,
+    public UserServiceImplementation(UserRepository userRepository,
             OrganizerRequestRepository organizerRequestRepository,
-            EventService eventService, PasswordEncoder passwordEncoder) {
+            Observable userDeleted, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.eventRepository = eventRepository;
         this.organizerRequestRepository = organizerRequestRepository;
-        this.eventService = eventService;
+        this.userDeleted = userDeleted;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -156,14 +153,7 @@ public class UserServiceImplementation implements UserService {
         if (isSelf && isAdmin)
             throw new Forbidden("Admins cannot delete themselves");
 
-        // deleteOwnEvent also removes the event from every user's attendingEvents
-        for (Event event : eventRepository.findByOrganizer_UserId(userId)) {
-            eventService.deleteOwnEvent(userId, event.getEventId());
-        }
-
-        for (User member : userRepository.findByFavoriteOrganizers_UserId(userId)) {
-            member.getFavoriteOrganizers().remove(user);
-        }
+        userDeleted.notifyObservers(user);
 
         userRepository.delete(user);
     }
