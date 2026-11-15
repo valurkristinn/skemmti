@@ -25,15 +25,15 @@ public class UserServiceImplementation implements UserService {
 
     private final UserRepository userRepository;
     private final OrganizerRequestRepository organizerRequestRepository;
-    private final Observable userDeleted;
+    private final Observable userDeletionPublisher;
     private final PasswordEncoder passwordEncoder;
 
     public UserServiceImplementation(UserRepository userRepository,
             OrganizerRequestRepository organizerRequestRepository,
-            Observable userDeleted, PasswordEncoder passwordEncoder) {
+            Observable userDeletionPublisher, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.organizerRequestRepository = organizerRequestRepository;
-        this.userDeleted = userDeleted;
+        this.userDeletionPublisher = userDeletionPublisher;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -153,7 +153,7 @@ public class UserServiceImplementation implements UserService {
         if (isSelf && isAdmin)
             throw new Forbidden("Admins cannot delete themselves");
 
-        userDeleted.notifyObservers(user);
+        userDeletionPublisher.notifyObservers(user);
 
         userRepository.delete(user);
     }
