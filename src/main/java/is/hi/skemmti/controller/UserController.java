@@ -1,6 +1,6 @@
 package is.hi.skemmti.controller;
 
-import is.hi.skemmti.model.Event;
+import is.hi.skemmti.model.EventProfile;
 import is.hi.skemmti.model.User;
 import is.hi.skemmti.model.UserProfile;
 import is.hi.skemmti.model.OrganizerRequest;
@@ -112,8 +112,8 @@ public class UserController {
     }
 
     @GetMapping("/user/going")
-    public List<Event> getAttendingEvents(@AuthenticationPrincipal Jwt jwt) {
-        return userService.getAttendingEvents(jwt.getClaim("uid"));
+    public List<EventProfile> getAttendingEvents(@AuthenticationPrincipal Jwt jwt) {
+        return EventProfile.fromList(userService.getAttendingEvents(jwt.getClaim("uid")));
     }
 
     @DeleteMapping("/user")

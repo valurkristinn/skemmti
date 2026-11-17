@@ -10,8 +10,6 @@ public interface EventService {
 
     Event getEvent(Long eventId);
 
-    User getEventOrganizer(Long eventId);
-
     List<Event> getAllEvents();
 
     List<Event> getOrganizerEvents(Long organizerId, String time);
