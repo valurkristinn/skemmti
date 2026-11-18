@@ -27,6 +27,10 @@ login() {
     -d "{\"username\":\"$1\",\"password\":\"$2\"}"
 }
 
+json_id() {
+  sed -n "s/.*\"$1\":\([0-9]*\).*/\1/p"
+}
+
 
 step "1. Anyone can see published events, no login needed"
 call GET "/event"
@@ -42,6 +46,7 @@ step "4. Sign up a new member (logged in right away)"
 MEMBER=$(curl -s -X POST "$URL/signup" -H "Content-Type: application/json" \
   -d '{"username":"demo_user","password":"demopassw"}')
 echo "Token: ${MEMBER:0:30}..."
+MEMBER_ID=$(curl -s "$URL/user" -H "Authorization: Bearer $MEMBER" | json_id userId)
 
 step "5. Member adds a description and a profile picture"
 IMG="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
@@ -67,11 +72,6 @@ call POST "/event" "$MEMBER" \
   '{"name":"Party","date":"2026-12-24","startTime":"20:00:00","location":"Reykjavik","description":"Not allowed"}'
 
 
-json_id() {
-  sed -n "s/.*\"$1\":\([0-9]*\).*/\1/p"
-}
-
-
 step "11. Sign up as an organizer -> a request is sent to the admin"
 RES=$(curl -s -X POST "$URL/signup/org" -H "Content-Type: application/json" \
   -d '{"username":"Jolatonleikar","password":"demopassw"}')
@@ -92,10 +92,10 @@ echo "$RES" | jq .
 ORG_ID=$(echo "$RES" | json_id userId)
 
 step "15. Admin edits another user's account"
-call PATCH "/user/100" "$ADMIN" '{"description":"Edited by admin"}'
+call PATCH "/user/$MEMBER_ID" "$ADMIN" '{"description":"Edited by admin"}'
 
 step "16. Admin deletes that user"
-call DELETE "/user/100" "$ADMIN"
+call DELETE "/user/$MEMBER_ID" "$ADMIN"
 
 
 step "17. The approved organizer can now log in"
