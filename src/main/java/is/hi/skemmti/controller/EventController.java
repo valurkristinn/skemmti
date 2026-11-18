@@ -2,7 +2,7 @@ package is.hi.skemmti.controller;
 
 import is.hi.skemmti.model.Event;
 import is.hi.skemmti.model.User;
-import is.hi.skemmti.model.OrganizerProfile;
+import is.hi.skemmti.model.EventProfile;
 import is.hi.skemmti.service.EventService;
 import is.hi.skemmti.utils.General;
 import is.hi.skemmti.utils.Validation;
@@ -53,53 +53,48 @@ public class EventController {
     }
 
     @GetMapping("/event/{eventId}")
-    public Event getEvent(@PathVariable Long eventId) {
-        return eventService.getEvent(eventId);
-    }
-
-    @GetMapping("/event/{eventId}/org")
-    public OrganizerProfile getEventOrganizer(@PathVariable Long eventId) {
-        return OrganizerProfile.from(eventService.getEventOrganizer(eventId));
+    public EventProfile getEvent(@PathVariable Long eventId) {
+        return EventProfile.from(eventService.getEvent(eventId));
     }
 
     @GetMapping("/event")
-    public List<Event> getAllEvents(@RequestParam(required = false) Integer offset,
+    public List<EventProfile> getAllEvents(@RequestParam(required = false) Integer offset,
             @RequestParam(required = false) Integer limit) {
-        return General.paginate(eventService.getAllEvents(), offset, limit);
+        return EventProfile.fromList(General.paginate(eventService.getAllEvents(), offset, limit));
     }
 
     @GetMapping("/org/{orgId}/event")
-    public List<Event> getOrganizerEvents(@PathVariable Long orgId,
+    public List<EventProfile> getOrganizerEvents(@PathVariable Long orgId,
                                           @RequestParam(defaultValue = "all") String time,
                                           @RequestParam(required = false) Integer offset,
                                           @RequestParam(required = false) Integer limit) {
 
         if (!List.of("upcoming", "past", "all").contains(time))
             throw new InvalidData("time must be upcoming, past or all");
-
-        return General.paginate(eventService.getOrganizerEvents(orgId, time), offset, limit);
+        
+        return EventProfile.fromList(General.paginate(eventService.getOrganizerEvents(orgId, time), offset, limit));
     }
 
     // since EventSearch is a record it spreads each item as @RequestParam
     @GetMapping("/event/search")
-    public List<Event> searchEvents(EventSearch search,
+    public List<EventProfile> searchEvents(EventSearch search,
             @RequestParam(required = false) Integer offset,
             @RequestParam(required = false) Integer limit) {
-        return General.paginate(eventService.searchEvents(search), offset, limit);
+        return EventProfile.fromList(General.paginate(eventService.searchEvents(search), offset, limit));
     }
 
     @PostMapping("/event")
     @ResponseStatus(HttpStatus.CREATED)
-    public Event createEvent(@AuthenticationPrincipal Jwt jwt, @RequestBody EventRequest req) {
+    public EventProfile createEvent(@AuthenticationPrincipal Jwt jwt, @RequestBody EventRequest req) {
         Event event = toEvent(req);
         Validation.validateEvent(event);
 
         Long organizerId = jwt.getClaim("uid");
-        return eventService.createEvent(organizerId, event);
+        return EventProfile.from(eventService.createEvent(organizerId, event));
     }
 
     @PutMapping("/event/{eventId}")
-    public Event editEvent(@AuthenticationPrincipal Jwt jwt,
+    public EventProfile editEvent(@AuthenticationPrincipal Jwt jwt,
             @PathVariable Long eventId,
             @RequestBody EventRequest req) {
 
@@ -107,11 +102,11 @@ public class EventController {
         Validation.validateEvent(updated);
 
         Long organizerId = jwt.getClaim("uid");
-        return eventService.editEvent(organizerId, eventId, updated);
+        return EventProfile.from(eventService.editEvent(organizerId, eventId, updated));
     }
 
     @PutMapping("/admin/event/{eventId}")
-    public Event adminEditEvent(@AuthenticationPrincipal Jwt jwt,
+    public EventProfile adminEditEvent(@AuthenticationPrincipal Jwt jwt,
             @PathVariable Long eventId,
             @RequestBody EventRequest req) {
 
@@ -119,7 +114,7 @@ public class EventController {
         Validation.validateEvent(updated);
 
         Long adminId = jwt.getClaim("uid");
-        return eventService.editEvent(adminId, eventId, updated);
+        return EventProfile.from(eventService.editEvent(adminId, eventId, updated));
     }
 
     public void deleteEvent(Long adminId, Long eventId) {
