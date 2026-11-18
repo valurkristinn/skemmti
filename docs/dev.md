@@ -79,4 +79,33 @@ only. `ImageUtil.validate` enforces this.
 
 ```bash
 ./mvnw test
+
+./mvnw test -Dtest=UserServiceTests # for running a single test class
 ```
+
+Tests use the seeded data and are rolled back after each test.
+
+All test classes extend `ContextBase` so they share one Spring context. Don't add
+`@SpringBootTest` to a test class directly.
+
+`ContextBase` holds shared constants and helpers: the seeded usernames `ADMIN`,
+`ORGANIZER`, `MEMBER`, and `idOf(username)` to get a seeded user's id (don't hardcode ids).
+Constants used by a single test class go at the top of that class.
+
+Service tests extend `BaseServiceTests` (extends `ContextBase`), which provides
+`adminId`, `organizerId` and `memberId`.
+
+Endpoint tests extend `BaseControllerTests` (extends `ContextBase`), which provides
+`mvc` and `getAuthHeader(username)`.
+
+`getAuthHeader(username)` logs in as a seeded user and returns the auth header.
+
+f.x
+```java
+mvc.perform(get("/requests/org").headers(getAuthHeader(ADMIN)))
+```
+
+- One case per test, named after what it checks
+- Per endpoint: a happy path and at least one of 400/401/403/404
+- Check the status and at most one or two response fields
+- Tests must not depend on each other or on run order
