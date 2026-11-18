@@ -37,17 +37,6 @@ public class EventServiceImplementation implements EventService {
     }
 
     @Override
-    public User getEventOrganizer(Long eventId) {
-        Event event = getEvent(eventId);
-        User organizer = event.getOrganizer();
-
-        if (organizer == null)
-            throw new NotFound("Organizer not found");
-
-        return organizer;
-    }
-
-    @Override
     public List<Event> getAllEvents() {
         return eventRepository.findByPublishedTrue();
     }
