@@ -107,11 +107,6 @@ public class EventServiceImplementation implements EventService {
     }
 
     @Override
-    public void deleteEvent(Long adminId, Long eventId) {
-        // TODO: útfæra - athuga að adminId hafi Role.ADMIN
-    }
-
-    @Override
     @Transactional
     public void deleteOwnEvent(Long organizerId, Long eventId) {
         Event event = eventRepository.findById(eventId)
@@ -179,15 +174,4 @@ public class EventServiceImplementation implements EventService {
         return userRepository.countByAttendingEvents_EventId(eventId);
     }
 
-    @Override
-    public void publish(Long userId, Long eventId) {
-        // TODO: útfæra - athuga að userId sé skipuleggjandi viðburðarins áður en birt
-        // er
-    }
-
-    @Override
-    public void unpublish(Long userId, Long eventId) {
-        // TODO: útfæra - athuga að userId sé skipuleggjandi viðburðarins áður en falið
-        // er
-    }
 }

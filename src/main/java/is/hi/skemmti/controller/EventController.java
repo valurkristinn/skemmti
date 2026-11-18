@@ -2,6 +2,7 @@ package is.hi.skemmti.controller;
 
 import is.hi.skemmti.model.Event;
 import is.hi.skemmti.model.User;
+import is.hi.skemmti.model.UserProfile; 
 import is.hi.skemmti.model.EventProfile;
 import is.hi.skemmti.service.EventService;
 import is.hi.skemmti.utils.General;
@@ -117,10 +118,6 @@ public class EventController {
         return EventProfile.from(eventService.editEvent(adminId, eventId, updated));
     }
 
-    public void deleteEvent(Long adminId, Long eventId) {
-        // TODO: útfæra
-    }
-
     @DeleteMapping("/event/{eventId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOwnEvent(@AuthenticationPrincipal Jwt jwt, @PathVariable Long eventId) {
@@ -139,21 +136,14 @@ public class EventController {
     }
 
     @GetMapping("/event/{eventId}/going")
-    public List<User> getAttendees(@PathVariable Long eventId) {
-        return eventService.getAttendees(eventId);
+    public List<UserProfile> getAttendees(@PathVariable Long eventId) {
+        return eventService.getAttendees(eventId)
+                .stream().map(UserProfile::from).toList();
     }
 
     @GetMapping("/event/{eventId}/going/count")
     public long getAttendeeCount(@PathVariable Long eventId) {
         return eventService.getAttendeeCount(eventId);
-    }
-
-    public void publish(Long userId, Long eventId) {
-        // TODO: útfæra
-    }
-
-    public void unpublish(Long userId, Long eventId) {
-        // TODO: útfæra
     }
 
     private Event toEvent(EventRequest req) {

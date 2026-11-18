@@ -90,10 +90,9 @@ public class UserController {
         return OrganizerProfile.from(userService.getOrganizer(orgId));
     }
 
-    // EXAMPLE: How to get currently logged in user - TBD if this should be kept 
     @GetMapping("/user")
-    public User getUser(@AuthenticationPrincipal Jwt jwt) {
-        return userService.getUser(jwt.getClaim("uid"));
+    public UserProfile getUser(@AuthenticationPrincipal Jwt jwt) {
+        return UserProfile.from(userService.getUser(jwt.getClaim("uid")));
     }
 
     @PostMapping("/user/favourite/{organizerId}")
@@ -107,8 +106,9 @@ public class UserController {
     }
 
     @GetMapping("/user/favourite")
-    public List<User> getFavoriteOrganizers(@AuthenticationPrincipal Jwt jwt) {
-        return userService.getFavoriteOrganizers(jwt.getClaim("uid"));
+    public List<OrganizerProfile> getFavoriteOrganizers(@AuthenticationPrincipal Jwt jwt) {
+        return userService.getFavoriteOrganizers(jwt.getClaim("uid"))
+                .stream().map(OrganizerProfile::from).toList();
     }
 
     @GetMapping("/user/going")
