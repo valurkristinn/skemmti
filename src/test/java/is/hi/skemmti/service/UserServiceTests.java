@@ -43,6 +43,23 @@ class UserServiceTests {
     private PasswordEncoder passwordEncoder;
 
     @Test
+    void getMemberOnlyFindsMembers() {
+        assertEquals(MEMBER_ID, userService.getMember(MEMBER_ID).getUserId());
+
+        assertThrows(NotFound.class, () -> userService.getMember(ORGANIZER_ID));
+        assertThrows(NotFound.class, () -> userService.getMember(ADMIN_ID));
+        assertThrows(NotFound.class, () -> userService.getMember(999L));
+    }
+
+    @Test
+    void getOrganizerOnlyFindsOrganizers() {
+        assertEquals(ORGANIZER_ID, userService.getOrganizer(ORGANIZER_ID).getUserId());
+
+        assertThrows(NotFound.class, () -> userService.getOrganizer(MEMBER_ID));
+        assertThrows(NotFound.class, () -> userService.getOrganizer(ADMIN_ID));
+    }
+
+    @Test
     void memberDeletesThemselves() {
         userService.deleteUser(MEMBER_ID, MEMBER_ID);
 

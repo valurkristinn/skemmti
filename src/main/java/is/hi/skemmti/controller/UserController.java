@@ -1,6 +1,7 @@
 package is.hi.skemmti.controller;
 
 import is.hi.skemmti.model.EventProfile;
+import is.hi.skemmti.model.MemberProfile;
 import is.hi.skemmti.model.User;
 import is.hi.skemmti.model.UserProfile;
 import is.hi.skemmti.model.OrganizerRequest;
@@ -80,9 +81,9 @@ public class UserController {
         return organizerRequestService.createRequest(req.username, req.password);
     }
 
-    @GetMapping("/user/{userId}")
-    public UserProfile getUser(@PathVariable Long userId) {
-        return UserProfile.from(userService.getUser(userId));
+    @GetMapping("/member/{memberId}")
+    public MemberProfile getMember(@PathVariable Long memberId) {
+        return MemberProfile.from(userService.getMember(memberId));
     }
 
     @GetMapping("/org/{orgId}")
@@ -90,10 +91,9 @@ public class UserController {
         return OrganizerProfile.from(userService.getOrganizer(orgId));
     }
 
-    // EXAMPLE: How to get currently logged in user - TBD if this should be kept 
     @GetMapping("/user")
-    public User getUser(@AuthenticationPrincipal Jwt jwt) {
-        return userService.getUser(jwt.getClaim("uid"));
+    public UserProfile getOwnAccount(@AuthenticationPrincipal Jwt jwt) {
+        return UserProfile.from(userService.getUser(jwt.getClaim("uid")));
     }
 
     @PostMapping("/user/favourite/{organizerId}")
@@ -107,8 +107,8 @@ public class UserController {
     }
 
     @GetMapping("/user/favourite")
-    public List<User> getFavoriteOrganizers(@AuthenticationPrincipal Jwt jwt) {
-        return userService.getFavoriteOrganizers(jwt.getClaim("uid"));
+    public List<OrganizerProfile> getFavoriteOrganizers(@AuthenticationPrincipal Jwt jwt) {
+        return OrganizerProfile.fromList(userService.getFavoriteOrganizers(jwt.getClaim("uid")));
     }
 
     @GetMapping("/user/going")
