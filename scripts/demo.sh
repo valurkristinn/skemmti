@@ -54,18 +54,27 @@ call PATCH "/user" "$MEMBER" "{\"description\":\"I love concerts\",\"image\":\"$
 
 step "6. Member favourites the organizer Oktoberfest"
 call POST "/user/favourite/2" "$MEMBER"
+echo "-> Favourites now:"
 call GET "/user/favourite" "$MEMBER"
 
 step "7. Member removes the favourite again"
 call POST "/user/unfavourite/2" "$MEMBER"
+echo "-> Favourites now:"
+call GET "/user/favourite" "$MEMBER"
 
 step "8. Member marks themselves as going to event 1"
 call POST "/event/1/going" "$MEMBER"
+echo "-> Events the member is going to now:"
 call GET "/user/going" "$MEMBER"
+echo "-> Number of people going to event 1:"
 call GET "/event/1/going/count"
 
 step "9. Member is not going after all"
 call POST "/event/1/notgoing" "$MEMBER"
+echo "-> Events the member is going to now:"
+call GET "/user/going" "$MEMBER"
+echo "-> Number of people going to event 1:"
+call GET "/event/1/going/count"
 
 step "10. Member tries to create an event -> 403 (only organizers can)"
 call POST "/event" "$MEMBER" \
@@ -96,6 +105,8 @@ call PATCH "/user/$MEMBER_ID" "$ADMIN" '{"description":"Edited by admin"}'
 
 step "16. Admin deletes that user"
 call DELETE "/user/$MEMBER_ID" "$ADMIN"
+echo "-> Looking up the deleted user:"
+call GET "/user/$MEMBER_ID" "$ADMIN"
 
 
 step "17. The approved organizer can now log in"
@@ -121,6 +132,8 @@ call DELETE "/event/$EVENT_ID" "$OKT"
 
 step "22. The owner deletes the event"
 call DELETE "/event/$EVENT_ID" "$ORG"
+echo "-> The organizer's events now:"
+call GET "/org/$ORG_ID/event"
 
 echo
 echo "=== Demo done ==="
