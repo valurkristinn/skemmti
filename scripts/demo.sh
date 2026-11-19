@@ -44,7 +44,7 @@ call GET "/user"
 
 step "4. Sign up a new member (logged in right away)"
 MEMBER=$(curl -s -X POST "$URL/signup" -H "Content-Type: application/json" \
-  -d '{"username":"demo_user","password":"demopassw"}')
+  -d '{"username":"demo_user","password":"Demopassw1"}')
 echo "Token: ${MEMBER:0:30}..."
 MEMBER_ID=$(curl -s "$URL/user" -H "Authorization: Bearer $MEMBER" | json_id userId)
 
@@ -74,12 +74,12 @@ call POST "/event" "$MEMBER" \
 
 step "11. Sign up as an organizer -> a request is sent to the admin"
 RES=$(curl -s -X POST "$URL/signup/org" -H "Content-Type: application/json" \
-  -d '{"username":"Jolatonleikar","password":"demopassw"}')
+  -d '{"username":"Jolatonleikar","password":"Demopassw1"}')
 echo "$RES" | jq .
 REQ_ID=$(echo "$RES" | json_id requestId)
 
 step "12. The organizer tries to log in before approval -> 401"
-call POST "/login" "" '{"username":"Jolatonleikar","password":"demopassw"}'
+call POST "/login" "" '{"username":"Jolatonleikar","password":"Demopassw1"}'
 
 
 step "13. Admin logs in and sees pending organizer requests"
@@ -99,7 +99,7 @@ call DELETE "/user/$MEMBER_ID" "$ADMIN"
 
 
 step "17. The approved organizer can now log in"
-ORG=$(login "Jolatonleikar" "demopassw")
+ORG=$(login "Jolatonleikar" "Demopassw1")
 echo "Token: ${ORG:0:30}..."
 
 step "18. Organizer creates an event"
