@@ -11,7 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// Seeded data: MEMBER (Jon) favourites ORGANIZER and is going to events 1 and 2
 class FavouriteAndGoingControllerTests extends BaseControllerTests {
 
     private static final int EVENT_ID = 1;
@@ -20,7 +19,6 @@ class FavouriteAndGoingControllerTests extends BaseControllerTests {
     private static final String NEW_MEMBER = "Nyr Medlimur";
     private static final String NEW_PASSWORD = "password123";
 
-    // Signs up a new member (no favourites, not going anywhere) and returns their auth header
     private HttpHeaders newMemberHeader() throws Exception {
         String token = mvc.perform(post("/signup")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -31,8 +29,6 @@ class FavouriteAndGoingControllerTests extends BaseControllerTests {
         headers.setBearerAuth(token);
         return headers;
     }
-
-    // POST /user/favourite/{organizerId}
 
     @Test
     void favouriteOrganizer_newMember_returns200() throws Exception {
@@ -55,8 +51,6 @@ class FavouriteAndGoingControllerTests extends BaseControllerTests {
                 .andExpect(status().isForbidden());
     }
 
-    // POST /user/unfavourite/{organizerId}
-
     @Test
     void unfavouriteOrganizer_existingFavourite_returns200() throws Exception {
         mvc.perform(post("/user/unfavourite/" + idOf(ORGANIZER))
@@ -70,8 +64,6 @@ class FavouriteAndGoingControllerTests extends BaseControllerTests {
                         .headers(newMemberHeader()))
                 .andExpect(status().isNotFound());
     }
-
-    // GET /user/favourite
 
     @Test
     void getFavourites_member_returnsOne() throws Exception {
@@ -87,8 +79,6 @@ class FavouriteAndGoingControllerTests extends BaseControllerTests {
                 .andExpect(status().isUnauthorized());
     }
 
-    // GET /user/going
-
     @Test
     void getGoing_member_returnsTwo() throws Exception {
         mvc.perform(get("/user/going")
@@ -102,8 +92,6 @@ class FavouriteAndGoingControllerTests extends BaseControllerTests {
         mvc.perform(get("/user/going"))
                 .andExpect(status().isUnauthorized());
     }
-
-    // POST /event/{eventId}/going
 
     @Test
     void markGoing_newMember_returns200() throws Exception {
@@ -126,8 +114,6 @@ class FavouriteAndGoingControllerTests extends BaseControllerTests {
                 .andExpect(status().isForbidden());
     }
 
-    // POST /event/{eventId}/notgoing
-
     @Test
     void cancelGoing_going_returns200() throws Exception {
         mvc.perform(post("/event/" + EVENT_ID + "/notgoing")
@@ -141,8 +127,6 @@ class FavouriteAndGoingControllerTests extends BaseControllerTests {
                         .headers(getAuthHeader(MEMBER)))
                 .andExpect(status().isNotFound());
     }
-
-    // GET /event/{eventId}/going
 
     @Test
     void getAttendees_event_returnsOne() throws Exception {
@@ -158,8 +142,6 @@ class FavouriteAndGoingControllerTests extends BaseControllerTests {
                         .headers(getAuthHeader(MEMBER)))
                 .andExpect(status().isNotFound());
     }
-
-    // GET /event/{eventId}/going/count
 
     @Test
     void getAttendeeCount_event_returnsOne() throws Exception {
