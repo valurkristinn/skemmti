@@ -1,16 +1,12 @@
 package is.hi.skemmti.controller;
 
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.http.MediaType;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class EventControllerTests extends BaseControllerTests {
 
@@ -89,91 +85,91 @@ class EventControllerTests extends BaseControllerTests {
                 .andExpect(status().isNotFound());
     }
 
-@Test
-void createEventAsOrganizer() throws Exception {
-    mvc.perform(post("/event")
-                    .headers(getAuthHeader(ORGANIZER))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(VALID_EVENT))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.organizer.name").value(ORGANIZER));
-}
+    @Test
+    void createEventAsOrganizer() throws Exception {
+        mvc.perform(post("/event")
+                        .headers(getAuthHeader(ORGANIZER))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(VALID_EVENT))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.organizer.name").value(ORGANIZER));
+    }
 
-@Test
-void createEventAsMember() throws Exception {
-    mvc.perform(post("/event")
-                    .headers(getAuthHeader(MEMBER))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(VALID_EVENT))
-            .andExpect(status().isForbidden());
-}
+    @Test
+    void createEventAsMember() throws Exception {
+        mvc.perform(post("/event")
+                        .headers(getAuthHeader(MEMBER))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(VALID_EVENT))
+                .andExpect(status().isForbidden());
+    }
 
-@Test
-void createEventWithoutName() throws Exception {
-    mvc.perform(post("/event")
-                    .headers(getAuthHeader(ORGANIZER))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(EVENT_WITHOUT_NAME))
-            .andExpect(status().isBadRequest());
-}
+    @Test
+    void createEventWithoutName() throws Exception {
+        mvc.perform(post("/event")
+                        .headers(getAuthHeader(ORGANIZER))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(EVENT_WITHOUT_NAME))
+                .andExpect(status().isBadRequest());
+    }
 
-@Test
-void createEventWithoutLogin() throws Exception {
-    mvc.perform(post("/event")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(VALID_EVENT))
-            .andExpect(status().isUnauthorized());
-}
+    @Test
+    void createEventWithoutLogin() throws Exception {
+        mvc.perform(post("/event")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(VALID_EVENT))
+                .andExpect(status().isUnauthorized());
+    }
 
-@Test
-void editOwnEvent() throws Exception {
-    mvc.perform(put("/event/" + PUBLISHED_EVENT_ID)
-                    .headers(getAuthHeader(ORGANIZER))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(EDITED_EVENT))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value("Edited name"));
-}
+    @Test
+    void editOwnEvent() throws Exception {
+        mvc.perform(put("/event/" + PUBLISHED_EVENT_ID)
+                        .headers(getAuthHeader(ORGANIZER))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(EDITED_EVENT))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Edited name"));
+    }
 
-@Test
-void editEventAsMember() throws Exception {
-    mvc.perform(put("/event/" + PUBLISHED_EVENT_ID)
-                    .headers(getAuthHeader(MEMBER))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(EDITED_EVENT))
-            .andExpect(status().isForbidden());
-}
+    @Test
+    void editEventAsMember() throws Exception {
+        mvc.perform(put("/event/" + PUBLISHED_EVENT_ID)
+                        .headers(getAuthHeader(MEMBER))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(EDITED_EVENT))
+                .andExpect(status().isForbidden());
+    }
 
-@Test
-void adminEditsEvent() throws Exception {
-    mvc.perform(put("/admin/event/" + PUBLISHED_EVENT_ID)
-                    .headers(getAuthHeader(ADMIN))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(EDITED_EVENT))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value("Edited name"));
-}
+    @Test
+    void adminEditsEvent() throws Exception {
+        mvc.perform(put("/admin/event/" + PUBLISHED_EVENT_ID)
+                        .headers(getAuthHeader(ADMIN))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(EDITED_EVENT))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Edited name"));
+    }
 
-@Test
-void adminEditAsMember() throws Exception {
-    mvc.perform(put("/admin/event/" + PUBLISHED_EVENT_ID)
-                    .headers(getAuthHeader(MEMBER))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(EDITED_EVENT))
-            .andExpect(status().isForbidden());
-}
+    @Test
+    void adminEditAsMember() throws Exception {
+        mvc.perform(put("/admin/event/" + PUBLISHED_EVENT_ID)
+                        .headers(getAuthHeader(MEMBER))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(EDITED_EVENT))
+                .andExpect(status().isForbidden());
+    }
 
-@Test
-void deleteOwnEvent() throws Exception {
-    mvc.perform(delete("/event/" + PUBLISHED_EVENT_ID)
-                    .headers(getAuthHeader(ORGANIZER)))
-            .andExpect(status().isNoContent());
-}
+    @Test
+    void deleteOwnEvent() throws Exception {
+        mvc.perform(delete("/event/" + PUBLISHED_EVENT_ID)
+                        .headers(getAuthHeader(ORGANIZER)))
+                .andExpect(status().isNoContent());
+    }
 
-@Test
-void deleteEventAsMember() throws Exception {
-    mvc.perform(delete("/event/" + PUBLISHED_EVENT_ID)
-                    .headers(getAuthHeader(MEMBER)))
-            .andExpect(status().isForbidden());
-}
+    @Test
+    void deleteEventAsMember() throws Exception {
+        mvc.perform(delete("/event/" + PUBLISHED_EVENT_ID)
+                        .headers(getAuthHeader(MEMBER)))
+                .andExpect(status().isForbidden());
+    }
 }
