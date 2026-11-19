@@ -1,7 +1,7 @@
 INSERT INTO users (user_id, username, password, image, description, role) VALUES
     (1, 'admin', '$2a$10$8ePt.GuVMAnYr3C/RdrXuu2OGosscdanOUZWgMFaHHzU2F32bRy5.', '', 'admin', 'ADMIN'),
-    (2, 'Oktoberfest', '$2a$10$8ePt.GuVMAnYr3C/RdrXuu2OGosscdanOUZWgMFaHHzU2F32bRy5.', '', 'Októberfest Háskóla Íslands', 'ORGANIZER'),
-    (3, 'Jon Jonsson', '$2a$10$8ePt.GuVMAnYr3C/RdrXuu2OGosscdanOUZWgMFaHHzU2F32bRy5.', '', 'Venjulegur náungi', 'MEMBER');
+    (2, 'oktoberfest', '$2a$10$8ePt.GuVMAnYr3C/RdrXuu2OGosscdanOUZWgMFaHHzU2F32bRy5.', '', 'Októberfest Háskóla Íslands', 'ORGANIZER'),
+    (3, 'jon.jonsson', '$2a$10$8ePt.GuVMAnYr3C/RdrXuu2OGosscdanOUZWgMFaHHzU2F32bRy5.', '', 'Venjulegur náungi', 'MEMBER');
 
 INSERT INTO event (event_id, name, date, start_time, location, description, tags, image, organizer_user_id, published) VALUES
     (1, 'Októberfest dagur 1', '2026-09-10', '17:00:00', 'Háskóli Íslands', 'Októberfest!', ARRAY['Októberfest'], '', 2, true),

@@ -15,8 +15,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 class UserControllerTests extends BaseControllerTests {
 
-    private static final String NEW_USERNAME = "Nyr Notandi";
-    private static final String VALID_PASSWORD = "password123";
+    private static final String NEW_USERNAME = "nyr.notandi";
+    private static final String MIXED_CASE_USERNAME = "Nyr.Notandi";
+    private static final String VALID_PASSWORD = "Password123";
     private static final String SHORT_PASSWORD = "short";
     private static final String SHORT_USERNAME = "ab";
     private static final String WRONG_PASSWORD = "wrongpassword";
@@ -27,6 +28,15 @@ class UserControllerTests extends BaseControllerTests {
         mvc.perform(post("/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(credentials(MEMBER, SEED_PASSWORD)))
+                .andExpect(status().isOk())
+                .andExpect(content().string(not(emptyString())));
+    }
+
+    @Test
+    void loginWithUppercaseUsername() throws Exception {
+        mvc.perform(post("/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(credentials(MEMBER.toUpperCase(), SEED_PASSWORD)))
                 .andExpect(status().isOk())
                 .andExpect(content().string(not(emptyString())));
     }
@@ -77,6 +87,15 @@ class UserControllerTests extends BaseControllerTests {
         mvc.perform(post("/signup/org")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(credentials(NEW_USERNAME, VALID_PASSWORD)))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.username").value(NEW_USERNAME));
+    }
+
+    @Test
+    void signupOrgMixedCaseUsernameIsLowercased() throws Exception {
+        mvc.perform(post("/signup/org")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(credentials(MIXED_CASE_USERNAME, VALID_PASSWORD)))
                 .andExpect(status().isAccepted())
                 .andExpect(jsonPath("$.username").value(NEW_USERNAME));
     }

@@ -18,12 +18,17 @@ The program runs an in-memory db during development which is seeded with the fol
 | role | username | userId |
 | --- | ---| ---|
 | admin | "admin" | 1 |
-| organizer | "Oktoberfest"| 2 |
-|member | "Jon Jonsson"| 3|
+| organizer | "oktoberfest"| 2 |
+|member | "jon.jonsson"| 3|
 
 all have the same password: `passw`
 
 users created after seeding will have userIds counting from 100
+
+new users must follow these rules (the seed password `passw` predates them):
+
+- username: 3–32 characters, only lowercase letters, numbers, `.`, `_` and `-` (e.g. `jon.jonsson`), capitals are converted to lowercase
+- password: 8–32 characters, at least one number and one capital letter (A–Z), no spaces (e.g. `Password123`)
 
 > events an relationships are also seeded but less relevant and can be fetched with `GET /event`
 

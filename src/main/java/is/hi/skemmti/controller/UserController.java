@@ -58,14 +58,18 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest req) {
+        if (req.username != null)
+            req.username = req.username.toLowerCase();
         User user = userService.login(req.username, req.password);
         return createToken(user);
     }
 
     @PostMapping("/signup")
     public String signup(@RequestBody LoginRequest req) {
-        Validation.validateLength(req.password, "Password", 8, 32);
-        Validation.validateLength(req.username, "Username", 3, 32);
+        if (req.username != null)
+            req.username = req.username.toLowerCase();
+        Validation.validatePassword(req.password);
+        Validation.validateUsername(req.username);
 
         User user = userService.signup(req.username, req.password);
         return createToken(user);
@@ -74,8 +78,10 @@ public class UserController {
     @PostMapping("/signup/org")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public OrganizerRequest signupOrganizer(@RequestBody LoginRequest req) {
-        Validation.validateLength(req.password, "Password", 8, 32);
-        Validation.validateLength(req.username, "Username", 3, 32);
+        if (req.username != null)
+            req.username = req.username.toLowerCase();
+        Validation.validatePassword(req.password);
+        Validation.validateUsername(req.username);
 
         return organizerRequestService.createRequest(req.username, req.password);
     }
@@ -131,6 +137,8 @@ public class UserController {
 
     @PatchMapping("/user")
     public UserProfile editOwnAccount(@AuthenticationPrincipal Jwt jwt, @RequestBody EditUserRequest req) {
+        if (req.username != null)
+            req.username = req.username.toLowerCase();
         Validation.validateUserEdit(req);
 
         Long userId = jwt.getClaim("uid");
@@ -140,6 +148,8 @@ public class UserController {
     @PatchMapping("/user/{userId}")
     public UserProfile editUser(@AuthenticationPrincipal Jwt jwt, @PathVariable Long userId,
             @RequestBody EditUserRequest req) {
+        if (req.username != null)
+            req.username = req.username.toLowerCase();
         Validation.validateUserEdit(req);
 
         return UserProfile.from(userService.editUser(jwt.getClaim("uid"), userId, req));

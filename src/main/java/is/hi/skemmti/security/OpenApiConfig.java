@@ -19,8 +19,11 @@ import org.springframework.context.annotation.Configuration;
                         2. Copy the token from the response body.
                         3. Click **Authorize** (top right), paste the token (without the word Bearer) and click **Authorize**.
 
-                        Test users, all with password `passw`: `admin` (admin), `Oktoberfest` (organizer), `Jon Jonsson` (member).
+                        Test users, all with password `passw`: `admin` (admin), `oktoberfest` (organizer), `jon.jonsson` (member).
                         To switch user: Authorize → Logout, then paste the new user's token.
+
+                        Usernames: 3–32 characters, only lowercase letters, numbers, `.`, `_` and `-` (e.g. `jon.jonsson`), capitals are converted to lowercase.
+                        Passwords: 8–32 characters, at least one number and one capital letter (A–Z), no spaces (e.g. `Password123`).
                         """),
         security = @SecurityRequirement(name = "bearerAuth"))
 public class OpenApiConfig {

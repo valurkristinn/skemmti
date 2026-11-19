@@ -16,8 +16,8 @@ class FavouriteAndGoingControllerTests extends BaseControllerTests {
     private static final int EVENT_ID = 1;
     private static final int NOT_GOING_EVENT_ID = 3;
     private static final int UNKNOWN_EVENT_ID = 999;
-    private static final String NEW_MEMBER = "Nyr Medlimur";
-    private static final String NEW_PASSWORD = "password123";
+    private static final String NEW_MEMBER = "Nyr.Medlimur";
+    private static final String NEW_PASSWORD = "Password123";
 
     private HttpHeaders newMemberHeader() throws Exception {
         String token = mvc.perform(post("/signup")
