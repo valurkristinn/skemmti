@@ -89,6 +89,18 @@ class UserControllerTests extends BaseControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void signupUsernameTakenByPendingOrgRequest() throws Exception {
+        mvc.perform(post("/signup/org")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(credentials(NEW_USERNAME, VALID_PASSWORD)))
+                .andExpect(status().isAccepted());
+
+        mvc.perform(post("/signup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(credentials(NEW_USERNAME, VALID_PASSWORD)))
+                .andExpect(status().isConflict());
+    }
     // GET /user
 
     @Test

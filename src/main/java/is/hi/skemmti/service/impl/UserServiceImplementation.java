@@ -1,24 +1,24 @@
 package is.hi.skemmti.service.impl;
 
-import is.hi.skemmti.exception.ApiException.Conflict;
-import is.hi.skemmti.exception.ApiException.NotFound;
-import is.hi.skemmti.exception.ApiException.Forbidden;
-import is.hi.skemmti.model.Event;
-import is.hi.skemmti.model.Role;
-import is.hi.skemmti.model.User;
-import is.hi.skemmti.observer.Observable;
-import is.hi.skemmti.repository.UserRepository;
-import is.hi.skemmti.service.UserService;
-import is.hi.skemmti.controller.UserController.EditUserRequest;
-import is.hi.skemmti.repository.OrganizerRequestRepository;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import is.hi.skemmti.controller.UserController.EditUserRequest;
+import is.hi.skemmti.exception.ApiException.Conflict;
+import is.hi.skemmti.exception.ApiException.Forbidden;
+import is.hi.skemmti.exception.ApiException.NotFound;
+import is.hi.skemmti.model.Event;
+import is.hi.skemmti.model.Role;
+import is.hi.skemmti.model.User;
+import is.hi.skemmti.observer.Observable;
+import is.hi.skemmti.repository.OrganizerRequestRepository;
+import is.hi.skemmti.repository.UserRepository;
+import is.hi.skemmti.service.UserService;
 
 @Service
 public class UserServiceImplementation implements UserService {
@@ -55,7 +55,7 @@ public class UserServiceImplementation implements UserService {
     public User signup(String username, String password) {
         Optional<User> userSearch = userRepository.findByUsername(username);
 
-        if (!userSearch.isEmpty())
+        if (userSearch.isPresent() || organizerRequestRepository.existsByUsername(username))
             throw new Conflict("Username is already taken");
 
         User user = new User();

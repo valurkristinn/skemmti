@@ -20,8 +20,6 @@ public interface EventService {
 
     Event editEvent(Long userId, Long eventId, Event event);
 
-    void deleteEvent(Long adminId, Long eventId);
-
     void deleteOwnEvent(Long organizerId, Long eventId);
 
     void markGoing(Long memberId, Long eventId);
@@ -32,7 +30,4 @@ public interface EventService {
 
     long getAttendeeCount(Long eventId);
 
-    void publish(Long userId, Long eventId);
-
-    void unpublish(Long userId, Long eventId);
 }
