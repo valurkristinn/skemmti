@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 public abstract class ContextBase {
 
     protected static final String ADMIN = "admin";
-    protected static final String ORGANIZER = "Oktoberfest";
-    protected static final String MEMBER = "Jon Jonsson";
+    protected static final String ORGANIZER = "oktoberfest";
+    protected static final String MEMBER = "jon.jonsson";
 
     @Autowired
     private UserRepository userRepository;

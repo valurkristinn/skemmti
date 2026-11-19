@@ -20,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class UserServiceTests extends BaseServiceTests {
 
-    private static final String OLD_PASSWORD = "oldpassword";
-    private static final String NEW_PASSWORD = "newpassword";
+    private static final String OLD_PASSWORD = "OldPassword1";
+    private static final String NEW_PASSWORD = "NewPassword1";
     private static final String WRONG_PASSWORD = "notmypassword";
     private static final String NEW_DESCRIPTION = "Ný lýsing";
     private static final String ADMIN_DESCRIPTION = "Breytt af admin";

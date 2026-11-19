@@ -14,8 +14,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class RequestControllerTests extends BaseControllerTests {
 
     private static final Long UNKNOWN_REQUEST_ID = 999L;
-    private static final String NEW_ORG_USERNAME = "Nytt Felag";
-    private static final String NEW_ORG_PASSWORD = "password123";
+    private static final String NEW_ORG_USERNAME = "nytt.felag";
+    private static final String NEW_ORG_PASSWORD = "Password123";
 
     @Autowired
     private OrganizerRequestService organizerRequestService;

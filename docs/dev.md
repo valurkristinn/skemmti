@@ -32,10 +32,15 @@ Seeded users (all with password `passw`):
 | role | username | userId |
 | --- | ---| ---|
 | admin | "admin" | 1 |
-| organizer | "Oktoberfest"| 2 |
-|member | "Jon Jonsson"| 3|
+| organizer | "oktoberfest"| 2 |
+|member | "jon.jonsson"| 3|
 
 Users and events created at runtime get ids from 100 upwards.
+
+New users must follow these rules (the seed password `passw` predates them):
+
+- Username: 3–32 characters, only lowercase letters, numbers, `.`, `_` and `-` (e.g. `jon.jonsson`), capitals are converted to lowercase
+- Password: 8–32 characters, at least one number and one capital letter (A–Z), no spaces (e.g. `Password123`)
 
 ## Project layout
 
