@@ -16,6 +16,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "users")
@@ -46,9 +47,9 @@ public class User {
 
     @JsonIgnore
     @ManyToMany
-    private List<Event> attendingEvents;
+    private List<Event> attendingEvents = new ArrayList<>();
 
     @JsonIgnore
     @ManyToMany
-    private List<User> favoriteOrganizers;
+    private List<User> favoriteOrganizers = new ArrayList<>();
 }
