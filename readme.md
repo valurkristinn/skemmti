@@ -1,6 +1,6 @@
 # Skemmti
 
-Description coming soon...
+Skemmti is a Spring Boot REST API for an events organizing platform. It provides a partly curated selection of events since only approved organizers can create events. Members can browse events and interact with them as well as viewing organizers and other members.
 
 ---
 
@@ -44,8 +44,6 @@ POST /login
 ```
 
 see [dev.md](docs/dev.md) for development info
-
-see [api.md](docs/api.md) for info on available endpoints
 
 ---
 
