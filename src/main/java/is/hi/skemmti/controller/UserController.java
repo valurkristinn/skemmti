@@ -117,12 +117,14 @@ public class UserController {
     }
 
     @DeleteMapping("/user")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOwnAccount(@AuthenticationPrincipal Jwt jwt) {
         Long userId = jwt.getClaim("uid");
         userService.deleteUser(userId, userId);
     }
 
     @DeleteMapping("/user/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@AuthenticationPrincipal Jwt jwt, @PathVariable Long userId) {
         userService.deleteUser(jwt.getClaim("uid"), userId);
     }
