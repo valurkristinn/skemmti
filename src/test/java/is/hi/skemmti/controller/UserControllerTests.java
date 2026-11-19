@@ -100,6 +100,7 @@ class UserControllerTests extends BaseControllerTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(credentials(NEW_USERNAME, VALID_PASSWORD)))
                 .andExpect(status().isConflict());
+    }
     // GET /user
 
     @Test
