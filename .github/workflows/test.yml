@@ -1,0 +1,23 @@
+name: Tests
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      # tests need JWT_SECRET, the example value is enough
+      - run: cp .env.example .env
+
+      - run: ./mvnw -B test

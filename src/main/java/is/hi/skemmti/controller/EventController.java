@@ -117,10 +117,6 @@ public class EventController {
         return EventProfile.from(eventService.editEvent(adminId, eventId, updated));
     }
 
-    public void deleteEvent(Long adminId, Long eventId) {
-        // TODO: útfæra
-    }
-
     @DeleteMapping("/event/{eventId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOwnEvent(@AuthenticationPrincipal Jwt jwt, @PathVariable Long eventId) {
@@ -146,14 +142,6 @@ public class EventController {
     @GetMapping("/event/{eventId}/going/count")
     public long getAttendeeCount(@PathVariable Long eventId) {
         return eventService.getAttendeeCount(eventId);
-    }
-
-    public void publish(Long userId, Long eventId) {
-        // TODO: útfæra
-    }
-
-    public void unpublish(Long userId, Long eventId) {
-        // TODO: útfæra
     }
 
     private Event toEvent(EventRequest req) {

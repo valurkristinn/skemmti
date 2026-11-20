@@ -30,6 +30,7 @@ public class SecurityConfig {
             "/event",
             "/event/{eventId}",
             "/event/{eventId}/going/count",
+            "/event/search",
             "/org/{orgId}",
             "/org/{orgId}/event",
     };

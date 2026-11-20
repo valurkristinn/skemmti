@@ -6,8 +6,6 @@ import is.hi.skemmti.repository.EventRepository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 import is.hi.skemmti.controller.UserController.EditUserRequest;
 import is.hi.skemmti.exception.ApiException.Conflict;
 import is.hi.skemmti.model.User;
@@ -20,14 +18,13 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// Uses the users and events seeded in data.sql, each test is rolled back
-@SpringBootTest
-@Transactional
-class UserServiceTests {
+class UserServiceTests extends BaseServiceTests {
 
-    private static final Long ADMIN_ID = 1L;
-    private static final Long ORGANIZER_ID = 2L;
-    private static final Long MEMBER_ID = 3L;
+    private static final String OLD_PASSWORD = "OldPassword1";
+    private static final String NEW_PASSWORD = "NewPassword1";
+    private static final String WRONG_PASSWORD = "notmypassword";
+    private static final String NEW_DESCRIPTION = "Ný lýsing";
+    private static final String ADMIN_DESCRIPTION = "Breytt af admin";
 
     @Autowired
     private UserService userService;
@@ -44,63 +41,63 @@ class UserServiceTests {
 
     @Test
     void getMemberOnlyFindsMembers() {
-        assertEquals(MEMBER_ID, userService.getMember(MEMBER_ID).getUserId());
+        assertEquals(memberId, userService.getMember(memberId).getUserId());
 
-        assertThrows(NotFound.class, () -> userService.getMember(ORGANIZER_ID));
-        assertThrows(NotFound.class, () -> userService.getMember(ADMIN_ID));
+        assertThrows(NotFound.class, () -> userService.getMember(organizerId));
+        assertThrows(NotFound.class, () -> userService.getMember(adminId));
         assertThrows(NotFound.class, () -> userService.getMember(999L));
     }
 
     @Test
     void getOrganizerOnlyFindsOrganizers() {
-        assertEquals(ORGANIZER_ID, userService.getOrganizer(ORGANIZER_ID).getUserId());
+        assertEquals(organizerId, userService.getOrganizer(organizerId).getUserId());
 
-        assertThrows(NotFound.class, () -> userService.getOrganizer(MEMBER_ID));
-        assertThrows(NotFound.class, () -> userService.getOrganizer(ADMIN_ID));
+        assertThrows(NotFound.class, () -> userService.getOrganizer(memberId));
+        assertThrows(NotFound.class, () -> userService.getOrganizer(adminId));
     }
 
     @Test
     void memberDeletesThemselves() {
-        userService.deleteUser(MEMBER_ID, MEMBER_ID);
+        userService.deleteUser(memberId, memberId);
 
-        assertThrows(NotFound.class, () -> userService.getUser(MEMBER_ID));
+        assertThrows(NotFound.class, () -> userService.getUser(memberId));
     }
 
     @Test
     void orgDeletesThemselves() {
-        userService.deleteUser(ORGANIZER_ID, ORGANIZER_ID);
+        userService.deleteUser(organizerId, organizerId);
 
-        assertThrows(NotFound.class, () -> userService.getUser(ORGANIZER_ID));
-        assertTrue(eventRepository.findByOrganizer_UserId(ORGANIZER_ID).isEmpty());
-        assertTrue(userService.getAttendingEvents(MEMBER_ID).isEmpty());
-        assertTrue(userService.getFavoriteOrganizers(MEMBER_ID).isEmpty());
+        assertThrows(NotFound.class, () -> userService.getUser(organizerId));
+        assertTrue(eventRepository.findByOrganizer_UserId(organizerId).isEmpty());
+        assertTrue(userService.getAttendingEvents(memberId).isEmpty());
+        assertTrue(userService.getFavoriteOrganizers(memberId).isEmpty());
     }
 
     @Test
     void adminDeletesThemselves() {
-        assertThrows(Forbidden.class, () -> userService.deleteUser(ADMIN_ID, ADMIN_ID));
+        assertThrows(Forbidden.class, () -> userService.deleteUser(adminId, adminId));
 
-        assertDoesNotThrow(() -> userService.getUser(ADMIN_ID));
+        assertDoesNotThrow(() -> userService.getUser(adminId));
     }
 
     @Test
     void adminDeletesMember() {
-        userService.deleteUser(ADMIN_ID, MEMBER_ID);
+        userService.deleteUser(adminId, memberId);
 
-        assertThrows(NotFound.class, () -> userService.getUser(MEMBER_ID));
+        assertThrows(NotFound.class, () -> userService.getUser(memberId));
     }
 
     @Test
     void memberEditsOwnDescriptionAndRemovesImage() {
         EditUserRequest req = new EditUserRequest();
-        req.description = "Ný lýsing";
+        req.description = NEW_DESCRIPTION;
         req.image = "";
 
-        User updated = userService.editUser(MEMBER_ID, MEMBER_ID, req);
+        User updated = userService.editUser(memberId, memberId, req);
 
-        assertEquals("Ný lýsing", updated.getDescription());
+        assertEquals(NEW_DESCRIPTION, updated.getDescription());
         assertNull(updated.getImage());
-        assertEquals("Jon Jonsson", updated.getUsername()); // null = unchanged
+        assertEquals(MEMBER, updated.getUsername()); // null = unchanged
     }
 
     @Test
@@ -108,45 +105,45 @@ class UserServiceTests {
         EditUserRequest req = new EditUserRequest();
         req.description = "hakk";
 
-        assertThrows(Forbidden.class, () -> userService.editUser(MEMBER_ID, ORGANIZER_ID, req));
+        assertThrows(Forbidden.class, () -> userService.editUser(memberId, organizerId, req));
     }
 
     @Test
     void usernameTakenReturnsConflict() {
         EditUserRequest req = new EditUserRequest();
-        req.username = "Oktoberfest";
+        req.username = ORGANIZER;
 
-        assertThrows(Conflict.class, () -> userService.editUser(MEMBER_ID, MEMBER_ID, req));
+        assertThrows(Conflict.class, () -> userService.editUser(memberId, memberId, req));
     }
 
     @Test
     void passwordChangeRequiresCurrentPassword() {
-        User member = userService.getUser(MEMBER_ID);
-        member.setPassword(passwordEncoder.encode("oldpassword"));
+        User member = userService.getUser(memberId);
+        member.setPassword(passwordEncoder.encode(OLD_PASSWORD));
         userRepository.save(member);
 
         EditUserRequest wrong = new EditUserRequest();
-        wrong.password = "newpassword";
-        wrong.currentPassword = "notmypassword";
-        assertThrows(Forbidden.class, () -> userService.editUser(MEMBER_ID, MEMBER_ID, wrong));
+        wrong.password = NEW_PASSWORD;
+        wrong.currentPassword = WRONG_PASSWORD;
+        assertThrows(Forbidden.class, () -> userService.editUser(memberId, memberId, wrong));
 
         EditUserRequest right = new EditUserRequest();
-        right.password = "newpassword";
-        right.currentPassword = "oldpassword";
-        userService.editUser(MEMBER_ID, MEMBER_ID, right);
+        right.password = NEW_PASSWORD;
+        right.currentPassword = OLD_PASSWORD;
+        userService.editUser(memberId, memberId, right);
 
-        assertDoesNotThrow(() -> userService.login("Jon Jonsson", "newpassword"));
+        assertDoesNotThrow(() -> userService.login(MEMBER, NEW_PASSWORD));
     }
 
     @Test
     void adminEditsMemberButNotPassword() {
         EditUserRequest req = new EditUserRequest();
-        req.description = "Breytt af admin";
-        userService.editUser(ADMIN_ID, MEMBER_ID, req);
-        assertEquals("Breytt af admin", userService.getUser(MEMBER_ID).getDescription());
+        req.description = ADMIN_DESCRIPTION;
+        userService.editUser(adminId, memberId, req);
+        assertEquals(ADMIN_DESCRIPTION, userService.getUser(memberId).getDescription());
 
         EditUserRequest pw = new EditUserRequest();
-        pw.password = "newpassword";
-        assertThrows(Forbidden.class, () -> userService.editUser(ADMIN_ID, MEMBER_ID, pw));
+        pw.password = NEW_PASSWORD;
+        assertThrows(Forbidden.class, () -> userService.editUser(adminId, memberId, pw));
     }
 }

@@ -19,6 +19,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findByRole(Role role);
 
+    boolean existsByRole(Role role);
+
     List<User> findByAttendingEvents_EventId(Long eventId);
 
     long countByAttendingEvents_EventId(Long eventId);
