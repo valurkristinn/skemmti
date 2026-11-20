@@ -114,3 +114,7 @@ mvc.perform(get("/requests/org").headers(getAuthHeader(ADMIN)))
 - Per endpoint: a happy path and at least one of 400/401/403/404
 - Check the status and at most one or two response fields
 - Tests must not depend on each other or on run order
+
+## Deployment
+
+Docker is used for deployments and runs with the `prod` profile which uses a persistent PostgreSQL db defined in `DB_URL`
