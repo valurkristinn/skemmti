@@ -136,20 +136,27 @@ class UserControllerTests extends BaseControllerTests {
                 .andExpect(status().isUnauthorized());
     }
 
-    // GET /user/{userId}
+    // GET /member/{memberId}
 
     @Test
-    void getUser_existingUser_returnsPublicFieldsOnly() throws Exception {
-        mvc.perform(get("/user/" + idOf(ORGANIZER))
-                .headers(getAuthHeader(MEMBER)))
+    void getMember_member_returnsPublicFieldsOnly() throws Exception {
+        mvc.perform(get("/member/" + idOf(MEMBER))
+                .headers(getAuthHeader(ORGANIZER)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value(ORGANIZER))
+                .andExpect(jsonPath("$.name").value(MEMBER))
                 .andExpect(jsonPath("$.password").doesNotExist());
     }
 
     @Test
-    void getUser_unknownId_returns404() throws Exception {
-        mvc.perform(get("/user/" + UNKNOWN_ID)
+    void getMember_organizer_returns404() throws Exception {
+        mvc.perform(get("/member/" + idOf(ORGANIZER))
+                .headers(getAuthHeader(MEMBER)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getMember_unknownId_returns404() throws Exception {
+        mvc.perform(get("/member/" + UNKNOWN_ID)
                 .headers(getAuthHeader(MEMBER)))
                 .andExpect(status().isNotFound());
     }

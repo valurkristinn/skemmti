@@ -40,6 +40,23 @@ class UserServiceTests extends BaseServiceTests {
     private PasswordEncoder passwordEncoder;
 
     @Test
+    void getMemberOnlyFindsMembers() {
+        assertEquals(memberId, userService.getMember(memberId).getUserId());
+
+        assertThrows(NotFound.class, () -> userService.getMember(organizerId));
+        assertThrows(NotFound.class, () -> userService.getMember(adminId));
+        assertThrows(NotFound.class, () -> userService.getMember(999L));
+    }
+
+    @Test
+    void getOrganizerOnlyFindsOrganizers() {
+        assertEquals(organizerId, userService.getOrganizer(organizerId).getUserId());
+
+        assertThrows(NotFound.class, () -> userService.getOrganizer(memberId));
+        assertThrows(NotFound.class, () -> userService.getOrganizer(adminId));
+    }
+
+    @Test
     void memberDeletesThemselves() {
         userService.deleteUser(memberId, memberId);
 

@@ -1,9 +1,8 @@
 package is.hi.skemmti.controller;
 
 import is.hi.skemmti.model.Event;
-import is.hi.skemmti.model.User;
-import is.hi.skemmti.model.UserProfile; 
 import is.hi.skemmti.model.EventProfile;
+import is.hi.skemmti.model.MemberProfile;
 import is.hi.skemmti.service.EventService;
 import is.hi.skemmti.utils.General;
 import is.hi.skemmti.utils.Validation;
@@ -136,9 +135,8 @@ public class EventController {
     }
 
     @GetMapping("/event/{eventId}/going")
-    public List<UserProfile> getAttendees(@PathVariable Long eventId) {
-        return eventService.getAttendees(eventId)
-                .stream().map(UserProfile::from).toList();
+    public List<MemberProfile> getAttendees(@PathVariable Long eventId) {
+        return MemberProfile.fromList(eventService.getAttendees(eventId));
     }
 
     @GetMapping("/event/{eventId}/going/count")
